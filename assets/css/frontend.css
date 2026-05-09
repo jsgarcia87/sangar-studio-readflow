@@ -1,0 +1,383 @@
+/**
+ * Readio - Premium Frontend Styles
+ * Featuring a modern, high-fidelity responsive design with micro-animations and CSS variables.
+ */
+
+:root {
+    /* Default fallbacks if PHP does not overwrite */
+    --readio-accent: #6366f1;
+    --readio-accent-rgb: 99, 102, 241;
+    --readio-bg: rgba(255, 255, 255, 0.8);
+    --readio-bg-dark: rgba(30, 41, 59, 0.9);
+    --readio-text: #1e293b;
+    --readio-text-muted: #64748b;
+    --readio-border: rgba(226, 232, 240, 0.8);
+    --readio-radius: 16px;
+    --readio-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+/* Base Widget Container */
+.readio-widget {
+    background: var(--readio-bg);
+    border: 1px solid var(--readio-border);
+    border-radius: var(--readio-radius);
+    padding: 24px;
+    margin: 32px 0;
+    box-shadow: var(--readio-shadow);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+.readio-widget *, .readio-widget *::before, .readio-widget *::after {
+    box-sizing: border-box;
+}
+
+/* Dark Mode support inside modern themes */
+@media (prefers-color-scheme: dark) {
+    .readio-widget {
+        background: rgba(15, 23, 42, 0.6);
+        border-color: rgba(51, 65, 85, 0.5);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+    }
+    :root {
+        --readio-text: #f1f5f9;
+        --readio-text-muted: #94a3b8;
+        --readio-border: rgba(51, 65, 85, 0.5);
+    }
+}
+
+/* Header with stats */
+.readio-widget-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.readio-stat-pill {
+    display: flex;
+    align-items: center;
+    background: rgba(var(--readio-accent-rgb), 0.06);
+    border: 1px solid rgba(var(--readio-accent-rgb), 0.12);
+    padding: 6px 14px;
+    border-radius: 99px;
+    transition: all 0.2s ease;
+}
+
+.readio-stat-pill:hover {
+    background: rgba(var(--readio-accent-rgb), 0.1);
+    transform: translateY(-1px);
+}
+
+.readio-pill-icon {
+    font-size: 16px;
+    margin-right: 8px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.readio-pill-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--readio-accent);
+    letter-spacing: -0.01em;
+}
+
+/* Player Panel Styling */
+.readio-player-body {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+    .readio-player-body {
+        background: rgba(30, 41, 59, 0.4);
+    }
+}
+
+/* Buttons and Wave Line Container */
+.readio-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+/* Premium Play/Pause Button */
+.readio-action-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--readio-accent);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(var(--readio-accent-rgb), 0.4);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.readio-action-play:hover {
+    background: color-mix(in srgb, var(--readio-accent) 90%, #000);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--readio-accent-rgb), 0.5);
+}
+
+.readio-action-play:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(var(--readio-accent-rgb), 0.3);
+}
+
+.readio-play-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+.readio-play-icon-wrap svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Spinning Animation for loading indicator */
+@keyframes readio-spin {
+    to { transform: rotate(360deg); }
+}
+.readio-svg-spinner {
+    animation: readio-spin 1s linear infinite;
+}
+
+.readio-play-label {
+    letter-spacing: -0.01em;
+}
+
+/* Wave Sound Animation */
+.readio-wave {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 24px;
+    padding: 2px;
+}
+
+.readio-wave-bar {
+    width: 3px;
+    height: 100%;
+    background-color: var(--readio-accent);
+    border-radius: 3px;
+    transform-origin: bottom;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    opacity: 0.3;
+}
+
+/* Bounce animation keyframe */
+@keyframes readio-wave-bounce {
+    0%, 100% { transform: scaleY(0.2); }
+    50% { transform: scaleY(1.0); }
+}
+
+/* Apply bounce ONLY when playing is active */
+.readio-wave.playing .readio-wave-bar {
+    animation: readio-wave-bounce 0.8s ease-in-out infinite;
+    opacity: 0.85;
+}
+
+.readio-wave.playing .readio-wave-bar:nth-child(1) { animation-delay: 0.1s; }
+.readio-wave.playing .readio-wave-bar:nth-child(2) { animation-delay: 0.25s; }
+.readio-wave.playing .readio-wave-bar:nth-child(3) { animation-delay: 0.15s; }
+.readio-wave.playing .readio-wave-bar:nth-child(4) { animation-delay: 0.3s; }
+.readio-wave.playing .readio-wave-bar:nth-child(5) { animation-delay: 0.2s; }
+
+.readio-wave:not(.playing) .readio-wave-bar {
+    transform: scaleY(0.2);
+}
+
+/* Timeline Custom Seek Slider */
+.readio-timeline-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+    animation: readio-fade-in 0.3s ease forwards;
+}
+
+@keyframes readio-fade-in {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.readio-time-text {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--readio-text-muted);
+    font-variant-numeric: tabular-nums;
+    min-width: 32px;
+}
+
+.readio-progress-rail {
+    position: relative;
+    flex-grow: 1;
+    height: 6px;
+    background: rgba(var(--readio-accent-rgb), 0.15);
+    border-radius: 99px;
+    cursor: pointer;
+    transition: height 0.2s ease;
+}
+
+.readio-progress-rail:hover {
+    height: 8px;
+}
+
+.readio-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--readio-accent);
+    border-radius: 99px;
+    width: 0%;
+    pointer-events: none;
+}
+
+.readio-progress-knob {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid var(--readio-accent);
+    transform: translate(-50%, -50%) scale(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+.readio-progress-rail:hover .readio-progress-knob,
+.readio-progress-rail:active .readio-progress-knob {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Footer / Extra Options styling */
+.readio-footer-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    border-top: 1px solid rgba(var(--readio-accent-rgb), 0.08);
+    padding-top: 12px;
+    animation: readio-fade-in 0.4s ease forwards;
+}
+
+/* Standard Control buttons */
+.readio-control-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--readio-border);
+    color: var(--readio-text-muted);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.readio-control-btn:hover {
+    color: var(--readio-text);
+    border-color: rgba(var(--readio-accent-rgb), 0.3);
+    background: rgba(var(--readio-accent-rgb), 0.04);
+}
+
+/* Speed Selection Selector dropdown */
+.readio-speed-control {
+    position: relative;
+}
+
+.readio-speed-menu {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    background: #ffffff;
+    border: 1px solid var(--readio-border);
+    border-radius: 8px;
+    padding: 4px;
+    margin: 0;
+    list-style: none;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    display: none;
+    flex-direction: column;
+    min-width: 70px;
+    z-index: 99;
+}
+
+@media (prefers-color-scheme: dark) {
+    .readio-speed-menu {
+        background: #1e293b;
+    }
+}
+
+.readio-speed-menu li {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--readio-text-muted);
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.15s ease;
+    text-align: center;
+}
+
+.readio-speed-menu li:hover {
+    background: rgba(var(--readio-accent-rgb), 0.08);
+    color: var(--readio-accent);
+}
+
+.readio-speed-menu li.active {
+    background: var(--readio-accent);
+    color: #ffffff;
+}
+
+/* Voice Indicator Badge */
+.readio-mode-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.readio-indicator-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981; /* Green active dot */
+    display: inline-block;
+}
+
+.readio-indicator-text {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--readio-text-muted);
+}
+
+/* Download button */
+.readio-btn-download svg {
+    stroke: var(--readio-text-muted);
+}
+.readio-btn-download:hover svg {
+    stroke: var(--readio-accent);
+}
