@@ -163,6 +163,24 @@ class Readio_Settings {
             'sanitize_callback' => 'sanitize_hex_color',
             'default'           => '',
         ]);
+
+        register_setting( 'readio_settings_group', 'readio_wave_bars_count', [
+            'type'              => 'integer',
+            'sanitize_callback' => 'absint',
+            'default'           => 5,
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_wave_bars_style', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_wave_bars_style' ],
+            'default'           => 'classic',
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_wave_bars_animation', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_wave_bars_animation' ],
+            'default'           => 'energetic',
+        ]);
     }
 
     /**
@@ -249,6 +267,24 @@ class Readio_Settings {
     }
 
     /**
+     * Sanitize and validate wave bars style.
+     */
+    public function sanitize_wave_bars_style( $value ) {
+        $allowed = [ 'classic', 'symmetric', 'rounded', 'brutalist' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'classic';
+    }
+
+    /**
+     * Sanitize and validate wave bars animation.
+     */
+    public function sanitize_wave_bars_animation( $value ) {
+        $allowed = [ 'energetic', 'chill', 'none' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'energetic';
+    }
+
+    /**
      * Enqueue asset files in Admin dashboard.
      */
     public function enqueue_admin_assets( $hook ) {
@@ -299,6 +335,9 @@ class Readio_Settings {
         $auto_generate          = get_option( 'readio_auto_generate', false );
         $allow_guest_generation = get_option( 'readio_allow_guest_generation', false );
         $show_download          = get_option( 'readio_show_download', true );
+        $wave_bars_count        = get_option( 'readio_wave_bars_count', 5 );
+        $wave_bars_style        = get_option( 'readio_wave_bars_style', 'classic' );
+        $wave_bars_animation    = get_option( 'readio_wave_bars_animation', 'energetic' );
 
         // Mask API Key for display if set
         $masked_key = '';
@@ -514,6 +553,51 @@ class Readio_Settings {
                                             <option value="pill" <?php selected( $border_radius, 'pill' ); ?>><?php esc_html_e( 'Pill (Forma de píldora moderna)', 'readio' ); ?></option>
                                         </select>
                                         <p class="description"><?php esc_html_e( 'Define las curvaturas del widget principal y de los botones internos.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_wave_bars_count">
+                                        <?php esc_html_e( 'Cantidad de Barras de Sonido', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="readio_wave_bars_count" id="readio_wave_bars_count" class="readio-select">
+                                            <option value="5" <?php selected( $wave_bars_count, 5 ); ?>>5 <?php esc_html_e( 'barras (Clásico compacto)', 'readio' ); ?></option>
+                                            <option value="8" <?php selected( $wave_bars_count, 8 ); ?>>8 <?php esc_html_e( 'barras (Equilibrado)', 'readio' ); ?></option>
+                                            <option value="12" <?php selected( $wave_bars_count, 12 ); ?>>12 <?php esc_html_e( 'barras (Elegante)', 'readio' ); ?></option>
+                                            <option value="16" <?php selected( $wave_bars_count, 16 ); ?>>16 <?php esc_html_e( 'barras (Lleno/Premium)', 'readio' ); ?></option>
+                                            <option value="20" <?php selected( $wave_bars_count, 20 ); ?>>20 <?php esc_html_e( 'barras (Ultra Alta Fidelidad)', 'readio' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Selecciona el número de barras que formarán la onda visual del reproductor.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_wave_bars_style">
+                                        <?php esc_html_e( 'Estilo Visual del Ecualizador', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="readio_wave_bars_style" id="readio_wave_bars_style" class="readio-select">
+                                            <option value="classic" <?php selected( $wave_bars_style, 'classic' ); ?>><?php esc_html_e( 'Líneas clásicas (crece desde abajo)', 'readio' ); ?></option>
+                                            <option value="symmetric" <?php selected( $wave_bars_style, 'symmetric' ); ?>><?php esc_html_e( 'Onda simétrica (onda real desde el centro)', 'readio' ); ?></option>
+                                            <option value="rounded" <?php selected( $wave_bars_style, 'rounded' ); ?>><?php esc_html_e( 'Píldoras redondeadas', 'readio' ); ?></option>
+                                            <option value="brutalist" <?php selected( $wave_bars_style, 'brutalist' ); ?>><?php esc_html_e( 'Bloques brutalistas (esquinas rectas sin margen)', 'readio' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Personaliza la forma y origen de escala de las barras de sonido.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_wave_bars_animation">
+                                        <?php esc_html_e( 'Animación del Visualizador', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="readio_wave_bars_animation" id="readio_wave_bars_animation" class="readio-select">
+                                            <option value="energetic" <?php selected( $wave_bars_animation, 'energetic' ); ?>><?php esc_html_e( 'Enérgica (Rápida y dinámica)', 'readio' ); ?></option>
+                                            <option value="chill" <?php selected( $wave_bars_animation, 'chill' ); ?>><?php esc_html_e( 'Relajada (Suave y cadenciosa)', 'readio' ); ?></option>
+                                            <option value="none" <?php selected( $wave_bars_animation, 'none' ); ?>><?php esc_html_e( 'Estática (Sin animación, sólo indicador visual)', 'readio' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Define la velocidad y el dinamismo con el que vibrarán las barras de sonido cuando se esté reproduciendo el audio.', 'readio' ); ?></p>
                                     </div>
                                 </div>
 

@@ -178,6 +178,36 @@ class Readio_Frontend {
             $css_text_muted = $custom_text_muted;
         }
 
+        // Get wave customizer options
+        $bars_count     = (int) get_option( 'readio_wave_bars_count', 5 );
+        $bars_style     = get_option( 'readio_wave_bars_style', 'classic' );
+        $bars_anim      = get_option( 'readio_wave_bars_animation', 'energetic' );
+
+        // Dynamic metrics based on chosen visual style
+        $bar_width        = '3px';
+        $bar_gap          = '4px';
+        $bar_radius       = '3px';
+        $transform_origin = 'bottom';
+        $align_items      = 'flex-end';
+        
+        if ( 'symmetric' === $bars_style ) {
+            $transform_origin = 'center';
+            $align_items      = 'center';
+        } elseif ( 'rounded' === $bars_style ) {
+            $bar_radius      = '99px';
+            $bar_width       = '4px';
+            $bar_gap         = '5px';
+        } elseif ( 'brutalist' === $bars_style ) {
+            $bar_radius      = '0px';
+            $bar_width       = '4px';
+            $bar_gap         = '2px';
+        }
+
+        $anim_duration = '0.8s';
+        if ( 'chill' === $bars_anim ) {
+            $anim_duration = '1.4s';
+        }
+
         // Apply inline CSS styles to set CSS custom properties matching administrative layout options
         $custom_css = "
             :root {
@@ -195,8 +225,53 @@ class Readio_Frontend {
                 --readio-font: {$css_font};
                 --readio-backdrop-filter: {$css_backdrop};
                 --readio-player-bg: {$css_player_bg};
+                --readio-wave-align: {$align_items};
+                --readio-wave-bar-width: {$bar_width};
+                --readio-wave-bar-gap: {$bar_gap};
+                --readio-wave-bar-radius: {$bar_radius};
+                --readio-wave-bar-origin: {$transform_origin};
+                --readio-wave-bar-duration: {$anim_duration};
             }
         ";
+
+        // Generate wave animation staggers
+        if ( 'none' !== $bars_anim ) {
+            for ( $i = 1; $i <= $bars_count; $i++ ) {
+                $delay = round( sin( $i * 0.8 ) * 0.25 + 0.3, 2 );
+                $custom_css .= "
+                    .readio-wave.playing .readio-wave-bar:nth-child({$i}) {
+                        animation-delay: {$delay}s;
+                    }
+                ";
+            }
+        } else {
+            // Hard disable animation staggers/bounce
+            $custom_css .= "
+                .readio-wave.playing .readio-wave-bar {
+                    animation: none !important;
+                }
+            ";
+        }
+
+        // Generate beautiful static scaling waveform when not playing/static
+        for ( $i = 1; $i <= $bars_count; $i++ ) {
+            $scale = round( 0.2 + abs( sin( $i * 0.6 ) ) * 0.6, 2 );
+            $custom_css .= "
+                .readio-wave:not(.playing) .readio-wave-bar:nth-child({$i}) {
+                    transform: scaleY({$scale}) !important;
+                }
+            ";
+            if ( 'none' === $bars_anim ) {
+                // If animation is none, even in play state it keeps the beautiful static wave form
+                $custom_css .= "
+                    .readio-wave.playing .readio-wave-bar:nth-child({$i}) {
+                        transform: scaleY({$scale}) !important;
+                        opacity: 0.7 !important;
+                    }
+                ";
+            }
+        }
+
         wp_add_inline_style( 'readio-frontend-style', $custom_css );
 
         // Pass security tokens, paths, and localized text lines safely to JavaScript
@@ -313,11 +388,12 @@ class Readio_Frontend {
 
                     <!-- Interactive Micro-Animation Sound Wave bars (animates during play) -->
                     <div class="readio-wave" id="readio-wave-animation">
-                        <span class="readio-wave-bar"></span>
-                        <span class="readio-wave-bar"></span>
-                        <span class="readio-wave-bar"></span>
-                        <span class="readio-wave-bar"></span>
-                        <span class="readio-wave-bar"></span>
+                        <?php 
+                        $bars_count = (int) get_option( 'readio_wave_bars_count', 5 );
+                        for ( $i = 0; $i < $bars_count; $i++ ) {
+                            echo '<span class="readio-wave-bar"></span>';
+                        }
+                        ?>
                     </div>
                 </div>
 
