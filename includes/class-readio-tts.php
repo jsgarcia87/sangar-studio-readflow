@@ -133,6 +133,16 @@ class Readio_TTS {
             return new WP_Error( 'invalid_post', __( 'El post no existe.', 'readio' ) );
         }
 
+        // Verify post status and authorization
+        if ( 'publish' !== $post->post_status ) {
+            return new WP_Error( 'unauthorized', __( 'No tienes permisos para escuchar este post.', 'readio' ) );
+        }
+
+        // Verify post is not password protected
+        if ( ! empty( $post->post_password ) ) {
+            return new WP_Error( 'password_required', __( 'Este post está protegido por contraseña.', 'readio' ) );
+        }
+
         $api_key = get_option( 'readio_api_key', '' );
         if ( empty( $api_key ) ) {
             return new WP_Error( 'missing_api_key', __( 'No se ha configurado la OpenAI API Key.', 'readio' ) );
@@ -202,6 +212,11 @@ class Readio_TTS {
             return;
         }
 
+        // Check user editing capability
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            return;
+        }
+
         // Only clear and regenerate cache for standard posts (or customize to any post type)
         if ( ! is_object( $post ) || 'post' !== $post->post_type ) {
             return;
@@ -232,6 +247,20 @@ class Readio_TTS {
             wp_send_json_error( __( 'ID de entrada inválido.', 'readio' ) );
         }
 
+        $post = get_post( $post_id );
+        if ( ! $post || 'post' !== $post->post_type ) {
+            wp_send_json_error( __( 'El post no existe.', 'readio' ) );
+        }
+
+        // Protect drafts, private posts, and password protected content
+        if ( 'publish' !== $post->post_status ) {
+            wp_send_json_error( __( 'No tienes permisos para escuchar este post.', 'readio' ) );
+        }
+
+        if ( ! empty( $post->post_password ) ) {
+            wp_send_json_error( __( 'Este post está protegido por contraseña.', 'readio' ) );
+        }
+
         $upload_dir = wp_upload_dir();
         $file_path  = $upload_dir['basedir'] . '/readio/post-' . $post_id . '.mp3';
         $file_url   = $upload_dir['baseurl'] . '/readio/post-' . $post_id . '.mp3';
@@ -244,7 +273,13 @@ class Readio_TTS {
             ]);
         }
 
-        // 2. Fallback to generating it if it doesn't exist
+        // 2. Prevent unauthenticated API abuse / guest-initiated on-demand generation if option is disabled
+        $allow_guest_generation = get_option( 'readio_allow_guest_generation', false );
+        if ( ! is_user_logged_in() && ! $allow_guest_generation ) {
+            wp_send_json_error( __( 'La generación de audio bajo demanda para invitados está deshabilitada.', 'readio' ) );
+        }
+
+        // 3. Fallback to generating it if it doesn't exist
         $result = $this->generate_audio_for_post( $post_id );
 
         if ( is_wp_error( $result ) ) {

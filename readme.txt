@@ -69,3 +69,12 @@ Select "Insertar manualmente" in the settings, and insert the shortcode `[readio
 
 = 1.0.0 =
 * Initial structure. Basic reading time calculations and raw browser SpeechSynthesis triggers.
+
+== Privacy & Third-Party Service Disclosure ==
+
+This plugin integrates with and sends requests to a third-party service: **OpenAI API** (specifically the Text-to-Speech service).
+
+* **What is sent:** Only the plain text content of your published posts is transmitted to OpenAI's servers to synthesize the voice.
+* **What is NOT sent:** No reader IP addresses, personal data, browser details, or cookies are sent to OpenAI.
+* **Data Processing & Storage:** The audio generation is executed server-side. The compiled MP3 is saved locally on your self-hosted WordPress site inside `/wp-content/uploads/readio/`. No external CDN or tracking tags are embedded in the reader's browser.
+* **OpenAI Terms:** For more details on data retention policies, please check the OpenAI Privacy Policy: https://openai.com/policies/privacy-policy

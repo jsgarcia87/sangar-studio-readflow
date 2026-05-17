@@ -44,8 +44,6 @@ class Readio_Settings {
      * Register settings in WordPress.
      */
     public function register_plugin_settings() {
-        $args = [ 'sanitize_callback' => 'sanitize_text_field' ];
-        
         register_setting( 'readio_settings_group', 'readio_api_key', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_api_key' ],
@@ -54,13 +52,13 @@ class Readio_Settings {
         
         register_setting( 'readio_settings_group', 'readio_voice', [
             'type'              => 'string',
-            'sanitize_callback' => 'sanitize_text_field',
+            'sanitize_callback' => [ $this, 'sanitize_voice' ],
             'default'           => 'alloy',
         ]);
 
         register_setting( 'readio_settings_group', 'readio_model', [
             'type'              => 'string',
-            'sanitize_callback' => 'sanitize_text_field',
+            'sanitize_callback' => [ $this, 'sanitize_model' ],
             'default'           => 'tts-1',
         ]);
 
@@ -72,7 +70,7 @@ class Readio_Settings {
 
         register_setting( 'readio_settings_group', 'readio_position', [
             'type'              => 'string',
-            'sanitize_callback' => 'sanitize_text_field',
+            'sanitize_callback' => [ $this, 'sanitize_position' ],
             'default'           => 'before',
         ]);
 
@@ -94,10 +92,76 @@ class Readio_Settings {
             'default'           => false,
         ]);
 
+        register_setting( 'readio_settings_group', 'readio_allow_guest_generation', [
+            'type'              => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'default'           => false,
+        ]);
+
         register_setting( 'readio_settings_group', 'readio_show_download', [
             'type'              => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default'           => true,
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_theme_style', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_theme_style' ],
+            'default'           => 'glass',
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_border_radius', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_border_radius' ],
+            'default'           => 'rounded',
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_use_gradient', [
+            'type'              => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'default'           => false,
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_accent_color_2', [
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_hex_color',
+            'default'           => '#818cf8',
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_font_family', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_font_family' ],
+            'default'           => 'inherit',
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_padding_scale', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_padding_scale' ],
+            'default'           => 'default',
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_icon_style', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_icon_style' ],
+            'default'           => 'emoji',
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_text_color', [
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_hex_color',
+            'default'           => '',
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_button_text_color', [
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_hex_color',
+            'default'           => '#ffffff',
+        ]);
+
+        register_setting( 'readio_settings_group', 'readio_text_muted_color', [
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_hex_color',
+            'default'           => '',
         ]);
     }
 
@@ -106,7 +170,82 @@ class Readio_Settings {
      */
     public function sanitize_api_key( $value ) {
         $value = sanitize_text_field( trim( $value ) );
+        if ( 'PROTECTED_KEY_PLACEHOLDER' === $value ) {
+            return get_option( 'readio_api_key', '' );
+        }
         return $value;
+    }
+
+    /**
+     * Sanitize and validate voice choice.
+     */
+    public function sanitize_voice( $value ) {
+        $allowed = [ 'alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'alloy';
+    }
+
+    /**
+     * Sanitize and validate model choice.
+     */
+    public function sanitize_model( $value ) {
+        $allowed = [ 'tts-1', 'tts-1-hd' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'tts-1';
+    }
+
+    /**
+     * Sanitize and validate placement position.
+     */
+    public function sanitize_position( $value ) {
+        $allowed = [ 'before', 'after', 'both', 'manual' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'before';
+    }
+
+    /**
+     * Sanitize and validate theme style.
+     */
+    public function sanitize_theme_style( $value ) {
+        $allowed = [ 'glass', 'dark', 'light', 'flat', 'brutalism' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'glass';
+    }
+
+    /**
+     * Sanitize and validate border radius.
+     */
+    public function sanitize_border_radius( $value ) {
+        $allowed = [ 'sharp', 'rounded', 'pill' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'rounded';
+    }
+
+    /**
+     * Sanitize and validate font family.
+     */
+    public function sanitize_font_family( $value ) {
+        $allowed = [ 'inherit', 'inter', 'playfair', 'outfit' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'inherit';
+    }
+
+    /**
+     * Sanitize and validate padding scale.
+     */
+    public function sanitize_padding_scale( $value ) {
+        $allowed = [ 'compact', 'default', 'spacious' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'default';
+    }
+
+    /**
+     * Sanitize and validate icon style.
+     */
+    public function sanitize_icon_style( $value ) {
+        $allowed = [ 'emoji', 'fontawesome', 'material', 'none' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'emoji';
     }
 
     /**
@@ -140,20 +279,31 @@ class Readio_Settings {
         }
 
         // Get saved settings or defaults
-        $api_key        = get_option( 'readio_api_key', '' );
-        $voice          = get_option( 'readio_voice', 'alloy' );
-        $model          = get_option( 'readio_model', 'tts-1' );
-        $wpm            = get_option( 'readio_wpm', 200 );
-        $position       = get_option( 'readio_position', 'before' );
-        $accent_color   = get_option( 'readio_accent_color', '#6366f1' );
-        $enable_ai      = get_option( 'readio_enable_ai', true );
-        $auto_generate  = get_option( 'readio_auto_generate', false );
-        $show_download  = get_option( 'readio_show_download', true );
+        $api_key                = get_option( 'readio_api_key', '' );
+        $voice                  = get_option( 'readio_voice', 'alloy' );
+        $model                  = get_option( 'readio_model', 'tts-1' );
+        $wpm                    = get_option( 'readio_wpm', 200 );
+        $position               = get_option( 'readio_position', 'before' );
+        $accent_color           = get_option( 'readio_accent_color', '#6366f1' );
+        $accent_color_2         = get_option( 'readio_accent_color_2', '#818cf8' );
+        $use_gradient           = get_option( 'readio_use_gradient', false );
+        $theme_style            = get_option( 'readio_theme_style', 'glass' );
+        $border_radius          = get_option( 'readio_border_radius', 'rounded' );
+        $font_family            = get_option( 'readio_font_family', 'inherit' );
+        $padding_scale          = get_option( 'readio_padding_scale', 'default' );
+        $icon_style             = get_option( 'readio_icon_style', 'emoji' );
+        $text_color             = get_option( 'readio_text_color', '' );
+        $text_muted_color       = get_option( 'readio_text_muted_color', '' );
+        $button_text_color      = get_option( 'readio_button_text_color', '#ffffff' );
+        $enable_ai              = get_option( 'readio_enable_ai', true );
+        $auto_generate          = get_option( 'readio_auto_generate', false );
+        $allow_guest_generation = get_option( 'readio_allow_guest_generation', false );
+        $show_download          = get_option( 'readio_show_download', true );
 
         // Mask API Key for display if set
         $masked_key = '';
         if ( ! empty( $api_key ) ) {
-            $masked_key = substr( $api_key, 0, 7 ) . '...' . substr( $api_key, -4 );
+            $masked_key = 'sk-••••' . substr( $api_key, -4 );
         }
         ?>
         <div class="readio-admin-wrap">
@@ -205,12 +355,19 @@ class Readio_Settings {
                                                 <input type="password" 
                                                        name="readio_api_key" 
                                                        id="readio_api_key_input" 
-                                                       value="<?php echo esc_attr( $api_key ); ?>" 
-                                                       placeholder="<?php echo ! empty( $masked_key ) ? 'sk-••••••••••••••••••••••••' : 'sk-...'; ?>"
+                                                       value="<?php echo ! empty( $api_key ) ? 'PROTECTED_KEY_PLACEHOLDER' : ''; ?>" 
+                                                       placeholder="<?php echo ! empty( $masked_key ) ? esc_attr( $masked_key ) : 'sk-...'; ?>"
                                                        class="regular-text readio-input" />
                                                 <button type="button" class="readio-toggle-password" id="readio-toggle-pw-btn">👁️</button>
                                             </div>
-                                            <p class="description"><?php echo sprintf( __( 'Inserta tu API key de OpenAI. Puedes obtener una en tu <a href="%s" target="_blank">Consola de OpenAI</a>.', 'readio' ), 'https://platform.openai.com/api-keys' ); ?></p>
+                                            <p class="description">
+                                                <?php 
+                                                echo sprintf( 
+                                                    esc_html__( 'Inserta tu API key de OpenAI. Puedes obtener una en tu %s.', 'readio' ), 
+                                                    '<a href="' . esc_url( 'https://platform.openai.com/api-keys' ) . '" target="_blank">' . esc_html__( 'Consola de OpenAI', 'readio' ) . '</a>' 
+                                                ); 
+                                                ?>
+                                            </p>
                                         </div>
                                     </div>
 
@@ -255,6 +412,19 @@ class Readio_Settings {
                                             <p class="description"><?php esc_html_e( 'Generar automáticamente el archivo MP3 del post al guardarlo o publicarlo. Esto evita tiempos de espera para el primer lector de la entrada.', 'readio' ); ?></p>
                                         </div>
                                     </div>
+
+                                    <div class="readio-form-row">
+                                        <label class="readio-label" for="readio_allow_guest_generation">
+                                            <?php esc_html_e( 'Permitir generación a invitados', 'readio' ); ?>
+                                        </label>
+                                        <div class="readio-input-wrap">
+                                            <label class="readio-switch">
+                                                <input type="checkbox" name="readio_allow_guest_generation" id="readio_allow_guest_generation" value="1" <?php checked( $allow_guest_generation, true ); ?>>
+                                                <span class="readio-slider"></span>
+                                            </label>
+                                            <p class="description"><?php esc_html_e( 'Permitir a los usuarios invitados (no autenticados) desencadenar la generación de audio con OpenAI si este no está pregenerado. Desmarcar para proteger tu cuota mensual contra abuso o bots.', 'readio' ); ?></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -290,17 +460,152 @@ class Readio_Settings {
                                             <option value="both" <?php selected( $position, 'both' ); ?>><?php esc_html_e( 'Antes y después del contenido', 'readio' ); ?></option>
                                             <option value="manual" <?php selected( $position, 'manual' ); ?>><?php esc_html_e( 'Insertar manualmente vía Shortcode o PHP', 'readio' ); ?></option>
                                         </select>
-                                        <p class="description"><?php echo sprintf( __( 'Si eliges "Insertar manualmente", puedes pegar el shortcode <code>[readio]</code> o llamar a <code>echo do_shortcode(\'[readio]\');</code> en tus plantillas.', 'readio' ), '' ); ?></p>
+                                        <p class="description">
+                                            <?php 
+                                            echo sprintf( 
+                                                esc_html__( 'Si eliges "Insertar manualmente", puedes pegar el shortcode %s o llamar a %s en tus plantillas.', 'readio' ), 
+                                                '<code>[readio]</code>', 
+                                                '<code>echo do_shortcode(\'[readio]\');</code>' 
+                                            ); 
+                                            ?>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_theme_style">
+                                        <?php esc_html_e( 'Estilo del Tema', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="readio_theme_style" id="readio_theme_style" class="readio-select">
+                                            <option value="glass" <?php selected( $theme_style, 'glass' ); ?>><?php esc_html_e( 'Glassmorphism (Vidrio translúcido) - Recomendado', 'readio' ); ?></option>
+                                            <option value="light" <?php selected( $theme_style, 'light' ); ?>><?php esc_html_e( 'Light Mode (Modo claro limpio)', 'readio' ); ?></option>
+                                            <option value="dark" <?php selected( $theme_style, 'dark' ); ?>><?php esc_html_e( 'Dark Mode (Sleek nocturno)', 'readio' ); ?></option>
+                                            <option value="flat" <?php selected( $theme_style, 'flat' ); ?>><?php esc_html_e( 'Flat / Minimalist (Sin bordes ni fondos)', 'readio' ); ?></option>
+                                            <option value="brutalism" <?php selected( $theme_style, 'brutalism' ); ?>><?php esc_html_e( 'Brutalism (Diseño agresivo y retro)', 'readio' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Selecciona el fondo y las sombras del widget. Las opciones Glassmorphism y Light Mode se adaptarán automáticamente si el visitante usa dark mode en su sistema operativo.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_icon_style">
+                                        <?php esc_html_e( 'Estilo de Iconos', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="readio_icon_style" id="readio_icon_style" class="readio-select">
+                                            <option value="emoji" <?php selected( $icon_style, 'emoji' ); ?>><?php esc_html_e( 'Emojis (Nativo)', 'readio' ); ?></option>
+                                            <option value="fontawesome" <?php selected( $icon_style, 'fontawesome' ); ?>><?php esc_html_e( 'FontAwesome', 'readio' ); ?></option>
+                                            <option value="material" <?php selected( $icon_style, 'material' ); ?>><?php esc_html_e( 'Material Icons', 'readio' ); ?></option>
+                                            <option value="none" <?php selected( $icon_style, 'none' ); ?>><?php esc_html_e( 'Ninguno', 'readio' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Selecciona la librería de iconos para las estadísticas.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_border_radius">
+                                        <?php esc_html_e( 'Estilo de Esquinas', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="readio_border_radius" id="readio_border_radius" class="readio-select">
+                                            <option value="sharp" <?php selected( $border_radius, 'sharp' ); ?>><?php esc_html_e( 'Sharp (Esquinas cuadradas retro)', 'readio' ); ?></option>
+                                            <option value="rounded" <?php selected( $border_radius, 'rounded' ); ?>><?php esc_html_e( 'Rounded (Esquinas suaves redondeadas)', 'readio' ); ?></option>
+                                            <option value="pill" <?php selected( $border_radius, 'pill' ); ?>><?php esc_html_e( 'Pill (Forma de píldora moderna)', 'readio' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Define las curvaturas del widget principal y de los botones internos.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_font_family">
+                                        <?php esc_html_e( 'Tipografía del Reproductor', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="readio_font_family" id="readio_font_family" class="readio-select">
+                                            <option value="inherit" <?php selected( $font_family, 'inherit' ); ?>><?php esc_html_e( 'Heredada (Usar tipografía de tu tema)', 'readio' ); ?></option>
+                                            <option value="inter" <?php selected( $font_family, 'inter' ); ?>>Inter (<?php esc_html_e( 'Moderna sans-serif premium', 'readio' ); ?>)</option>
+                                            <option value="playfair" <?php selected( $font_family, 'playfair' ); ?>>Playfair Display (<?php esc_html_e( 'Elegante serif clásica', 'readio' ); ?>)</option>
+                                            <option value="outfit" <?php selected( $font_family, 'outfit' ); ?>>Outfit (<?php esc_html_e( 'Geométrica y enérgica redondeada', 'readio' ); ?>)</option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Permite cambiar la tipografía para dar un toque de diseño exclusivo. El plugin cargará las fuentes optimizadas desde Google Fonts si eliges una distinta a la de tu tema.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_padding_scale">
+                                        <?php esc_html_e( 'Tamaño del Widget', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="readio_padding_scale" id="readio_padding_scale" class="readio-select">
+                                            <option value="compact" <?php selected( $padding_scale, 'compact' ); ?>><?php esc_html_e( 'Compacto (Márgenes ajustados)', 'readio' ); ?></option>
+                                            <option value="default" <?php selected( $padding_scale, 'default' ); ?>><?php esc_html_e( 'Predeterminado (Equilibrado)', 'readio' ); ?></option>
+                                            <option value="spacious" <?php selected( $padding_scale, 'spacious' ); ?>><?php esc_html_e( 'Espacioso (Padding amplio y elegante)', 'readio' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Ajusta los espacios internos (padding) para integrarse con la densidad de diseño de tus plantillas de blog.', 'readio' ); ?></p>
                                     </div>
                                 </div>
 
                                 <div class="readio-form-row">
                                     <label class="readio-label" for="readio_accent_color">
-                                        <?php esc_html_e( 'Color de acento', 'readio' ); ?>
+                                        <?php esc_html_e( 'Color de acento primario', 'readio' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
                                         <input type="text" name="readio_accent_color" id="readio_accent_color" value="<?php echo esc_attr( $accent_color ); ?>" class="readio-color-field" data-default-color="#6366f1">
-                                        <p class="description"><?php esc_html_e( 'Define el color de los botones del reproductor, barras de progreso y elementos interactivos para integrarse con tu tema.', 'readio' ); ?></p>
+                                        <p class="description"><?php esc_html_e( 'Define el color de los botones del reproductor, barras de progreso y elementos interactivos primarios.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_text_color">
+                                        <?php esc_html_e( 'Color del Texto (Opcional)', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <input type="text" name="readio_text_color" id="readio_text_color" value="<?php echo esc_attr( $text_color ); ?>" class="readio-color-field" data-default-color="">
+                                        <p class="description"><?php esc_html_e( 'Sobrescribe el color del texto principal del widget. Déjalo en blanco para usar el color por defecto del tema.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_text_muted_color">
+                                        <?php esc_html_e( 'Color del Texto Secundario', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <input type="text" name="readio_text_muted_color" id="readio_text_muted_color" value="<?php echo esc_attr( $text_muted_color ); ?>" class="readio-color-field" data-default-color="">
+                                        <p class="description"><?php esc_html_e( 'Color de textos secundarios como la velocidad, indicadores y tiempo. Déjalo en blanco para usar el color por defecto.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_button_text_color">
+                                        <?php esc_html_e( 'Color del Texto del Botón', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <input type="text" name="readio_button_text_color" id="readio_button_text_color" value="<?php echo esc_attr( $button_text_color ); ?>" class="readio-color-field" data-default-color="#ffffff">
+                                        <p class="description"><?php esc_html_e( 'Color de la fuente dentro del botón de reproducción principal.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_use_gradient">
+                                        <?php esc_html_e( 'Usar Gradiente de Color', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <label class="readio-switch">
+                                            <input type="checkbox" name="readio_use_gradient" id="readio_use_gradient" value="1" <?php checked( $use_gradient, true ); ?>>
+                                            <span class="readio-slider"></span>
+                                        </label>
+                                        <p class="description"><?php esc_html_e( 'Genera un degradado premium de dos colores en los elementos destacados del reproductor visual.', 'readio' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row readio-conditional-gradient-row" style="<?php echo $use_gradient ? '' : 'display:none;'; ?>">
+                                    <label class="readio-label" for="readio_accent_color_2">
+                                        <?php esc_html_e( 'Color de acento secundario', 'readio' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <input type="text" name="readio_accent_color_2" id="readio_accent_color_2" value="<?php echo esc_attr( $accent_color_2 ); ?>" class="readio-color-field" data-default-color="#818cf8">
+                                        <p class="description"><?php esc_html_e( 'Selecciona el segundo color para crear la transición lineal del degradado.', 'readio' ); ?></p>
                                     </div>
                                 </div>
 
@@ -466,6 +771,10 @@ class Readio_Settings {
         $text    = isset( $_POST['text'] ) ? sanitize_text_field( $_POST['text'] ) : 'Test';
         $voice   = isset( $_POST['voice'] ) ? sanitize_text_field( $_POST['voice'] ) : 'alloy';
         $model   = isset( $_POST['model'] ) ? sanitize_text_field( $_POST['model'] ) : 'tts-1';
+
+        if ( 'PROTECTED_KEY_PLACEHOLDER' === $api_key ) {
+            $api_key = get_option( 'readio_api_key', '' );
+        }
 
         if ( empty( $api_key ) ) {
             wp_send_json_error( __( 'Por favor, proporciona una API Key.', 'readio' ) );

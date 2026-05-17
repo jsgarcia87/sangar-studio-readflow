@@ -7,13 +7,17 @@
     /* Default fallbacks if PHP does not overwrite */
     --readio-accent: #6366f1;
     --readio-accent-rgb: 99, 102, 241;
+    --readio-accent-bg: #6366f1;
     --readio-bg: rgba(255, 255, 255, 0.8);
-    --readio-bg-dark: rgba(30, 41, 59, 0.9);
     --readio-text: #1e293b;
     --readio-text-muted: #64748b;
     --readio-border: rgba(226, 232, 240, 0.8);
     --readio-radius: 16px;
+    --readio-padding: 24px;
+    --readio-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     --readio-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    --readio-backdrop-filter: blur(8px);
+    --readio-player-bg: rgba(255, 255, 255, 0.35);
 }
 
 /* Base Widget Container */
@@ -21,12 +25,13 @@
     background: var(--readio-bg);
     border: 1px solid var(--readio-border);
     border-radius: var(--readio-radius);
-    padding: 24px;
+    padding: var(--readio-padding);
     margin: 32px 0;
     box-shadow: var(--readio-shadow);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    backdrop-filter: var(--readio-backdrop-filter);
+    -webkit-backdrop-filter: var(--readio-backdrop-filter);
+    font-family: var(--readio-font);
+    color: var(--readio-text) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-sizing: border-box;
 }
@@ -37,15 +42,16 @@
 
 /* Dark Mode support inside modern themes */
 @media (prefers-color-scheme: dark) {
-    .readio-widget {
-        background: rgba(15, 23, 42, 0.6);
+    /* Only auto-override if the user uses the responsive adaptive themes */
+    .readio-widget.readio-theme-glass,
+    .readio-widget.readio-theme-light {
+        background: rgba(15, 23, 42, 0.65);
         border-color: rgba(51, 65, 85, 0.5);
         box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
-    }
-    :root {
         --readio-text: #f1f5f9;
         --readio-text-muted: #94a3b8;
         --readio-border: rgba(51, 65, 85, 0.5);
+        --readio-player-bg: rgba(30, 41, 59, 0.45);
     }
 }
 
@@ -88,16 +94,10 @@
 
 /* Player Panel Styling */
 .readio-player-body {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--readio-player-bg);
     border-radius: 12px;
     padding: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-@media (prefers-color-scheme: dark) {
-    .readio-player-body {
-        background: rgba(30, 41, 59, 0.4);
-    }
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 /* Buttons and Wave Line Container */
@@ -113,23 +113,23 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: var(--readio-accent);
-    color: #ffffff;
+    background: var(--readio-accent-bg);
+    color: var(--readio-button-text, #ffffff) !important;
     border: none;
     padding: 12px 24px;
     border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(var(--readio-accent-rgb), 0.4);
+    box-shadow: 0 4px 14px rgba(var(--readio-accent-rgb), 0.35);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     outline: none;
 }
 
 .readio-action-play:hover {
-    background: color-mix(in srgb, var(--readio-accent) 90%, #000);
+    filter: brightness(1.08);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(var(--readio-accent-rgb), 0.5);
+    box-shadow: 0 6px 20px rgba(var(--readio-accent-rgb), 0.45);
 }
 
 .readio-action-play:active {
@@ -220,7 +220,7 @@
 .readio-time-text {
     font-size: 11px;
     font-weight: 500;
-    color: var(--readio-text-muted);
+    color: var(--readio-text-muted) !important;
     font-variant-numeric: tabular-nums;
     min-width: 32px;
 }
@@ -244,7 +244,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    background: var(--readio-accent);
+    background: var(--readio-accent-bg);
     border-radius: 99px;
     width: 0%;
     pointer-events: none;
@@ -288,7 +288,7 @@
     justify-content: center;
     background: transparent;
     border: 1px solid var(--readio-border);
-    color: var(--readio-text-muted);
+    color: var(--readio-text-muted) !important;
     border-radius: 8px;
     padding: 6px 12px;
     cursor: pointer;
@@ -336,7 +336,7 @@
     padding: 6px 12px;
     font-size: 12px;
     font-weight: 500;
-    color: var(--readio-text-muted);
+    color: var(--readio-text-muted) !important;
     cursor: pointer;
     border-radius: 5px;
     transition: all 0.15s ease;
@@ -371,13 +371,120 @@
 .readio-indicator-text {
     font-size: 11px;
     font-weight: 600;
-    color: var(--readio-text-muted);
+    color: var(--readio-text-muted) !important;
 }
 
 /* Download button */
 .readio-btn-download svg {
-    stroke: var(--readio-text-muted);
+    stroke: var(--readio-text-muted) !important;
 }
 .readio-btn-download:hover svg {
     stroke: var(--readio-accent);
+}
+
+/* Brutalism Theme Overrides */
+.readio-widget.readio-theme-brutalism {
+    border-width: 3px;
+    border-radius: 0 !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+
+.readio-widget.readio-theme-brutalism .readio-stat-pill {
+    border: 2px solid #000;
+    border-radius: 0;
+    background: #fff;
+    box-shadow: 2px 2px 0px 0px #000;
+    color: #000;
+}
+
+.readio-widget.readio-theme-brutalism .readio-stat-pill .readio-pill-text {
+    color: #000;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.readio-widget.readio-theme-brutalism .readio-player-body {
+    border: 3px solid #000;
+    border-radius: 0;
+    box-shadow: 4px 4px 0px 0px #000;
+    background: #fff;
+}
+
+.readio-widget.readio-theme-brutalism .readio-action-play {
+    border: 3px solid #000;
+    border-radius: 0;
+    box-shadow: 4px 4px 0px 0px #000;
+    background: var(--readio-accent);
+    color: #000 !important;
+    text-transform: uppercase;
+    font-weight: 900;
+}
+
+.readio-widget.readio-theme-brutalism .readio-action-play:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px 0px #000;
+}
+
+.readio-widget.readio-theme-brutalism .readio-action-play:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px 0px #000;
+}
+
+.readio-widget.readio-theme-brutalism .readio-progress-rail {
+    border: 2px solid #000;
+    background: #fff;
+    height: 12px;
+    border-radius: 0;
+}
+
+.readio-widget.readio-theme-brutalism .readio-progress-bar {
+    border-right: 2px solid #000;
+    border-radius: 0;
+}
+
+.readio-widget.readio-theme-brutalism .readio-progress-knob {
+    border: 3px solid #000;
+    border-radius: 0;
+    background: var(--readio-accent);
+    width: 16px;
+    height: 24px;
+}
+
+.readio-widget.readio-theme-brutalism .readio-control-btn {
+    border: 2px solid #000;
+    border-radius: 0;
+    box-shadow: 2px 2px 0px 0px #000;
+    color: #000 !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: #fff;
+}
+
+.readio-widget.readio-theme-brutalism .readio-control-btn:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px 0px #000;
+    background: #f0f0f0;
+}
+
+.readio-widget.readio-theme-brutalism .readio-speed-menu {
+    border: 3px solid #000;
+    border-radius: 0;
+    box-shadow: 4px 4px 0px 0px #000;
+}
+
+.readio-widget.readio-theme-brutalism .readio-speed-menu li {
+    border-radius: 0;
+    color: #000 !important;
+    font-weight: bold;
+}
+
+.readio-widget.readio-theme-brutalism .readio-speed-menu li.active {
+    background: #000;
+    color: #fff !important;
+}
+
+.readio-widget.readio-theme-brutalism .readio-mode-indicator .readio-indicator-text {
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #000 !important;
 }

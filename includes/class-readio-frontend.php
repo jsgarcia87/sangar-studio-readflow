@@ -57,9 +57,40 @@ class Readio_Frontend {
         }
 
         // Get option values
-        $api_key   = get_option( 'readio_api_key', '' );
-        $enable_ai = get_option( 'readio_enable_ai', true ) && ! empty( $api_key );
-        $accent    = get_option( 'readio_accent_color', '#6366f1' );
+        $api_key       = get_option( 'readio_api_key', '' );
+        $enable_ai     = get_option( 'readio_enable_ai', true ) && ! empty( $api_key );
+        $accent_1      = get_option( 'readio_accent_color', '#6366f1' );
+        $accent_2      = get_option( 'readio_accent_color_2', '#818cf8' );
+        $use_gradient  = get_option( 'readio_use_gradient', false );
+        $theme_style   = get_option( 'readio_theme_style', 'glass' );
+        $border_radius = get_option( 'readio_border_radius', 'rounded' );
+        $font_family   = get_option( 'readio_font_family', 'inherit' );
+        $padding_scale = get_option( 'readio_padding_scale', 'default' );
+        $icon_style    = get_option( 'readio_icon_style', 'emoji' );
+        $custom_text   = get_option( 'readio_text_color', '' );
+        $custom_text_muted = get_option( 'readio_text_muted_color', '' );
+        $button_text   = get_option( 'readio_button_text_color', '#ffffff' );
+
+        // Enqueue icon libraries if needed
+        if ( 'fontawesome' === $icon_style ) {
+            wp_enqueue_style( 'readio-fontawesome', READIO_URL . 'assets/fonts/fontawesome/css/all.min.css', [], null );
+        } elseif ( 'material' === $icon_style ) {
+            wp_enqueue_style( 'readio-material-icons', READIO_URL . 'assets/fonts/material/material-icons.css', [], null );
+        }
+
+        // Enqueue fonts depending on administrative setting
+        if ( 'inter' === $font_family ) {
+            wp_enqueue_style( 'readio-font-inter', READIO_URL . 'assets/fonts/google/inter.css', [], null );
+            $css_font = "'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
+        } elseif ( 'playfair' === $font_family ) {
+            wp_enqueue_style( 'readio-font-playfair', READIO_URL . 'assets/fonts/google/playfair.css', [], null );
+            $css_font = "'Playfair Display', Georgia, serif";
+        } elseif ( 'outfit' === $font_family ) {
+            wp_enqueue_style( 'readio-font-outfit', READIO_URL . 'assets/fonts/google/outfit.css', [], null );
+            $css_font = "'Outfit', sans-serif";
+        } else {
+            $css_font = 'inherit';
+        }
 
         // Enqueue stylesheet
         wp_enqueue_style( 'readio-frontend-style', READIO_URL . 'assets/css/frontend.css', [], READIO_VERSION );
@@ -68,13 +99,102 @@ class Readio_Frontend {
         wp_enqueue_script( 'readio-frontend-script', READIO_URL . 'assets/js/frontend.js', [], READIO_VERSION, true );
 
         // Convert HEX accent color to RGB for smooth alpha transparency overlays in CSS
-        $accent_rgb = $this->hex2rgb( $accent );
+        $accent_rgb = $this->hex2rgb( $accent_1 );
+
+        // Apply sizing padding rules
+        if ( 'compact' === $padding_scale ) {
+            $css_padding = '16px';
+        } elseif ( 'spacious' === $padding_scale ) {
+            $css_padding = '36px';
+        } else {
+            $css_padding = '24px';
+        }
+
+        // Apply border-radius rules
+        if ( 'sharp' === $border_radius ) {
+            $css_radius = '0px';
+        } elseif ( 'pill' === $border_radius ) {
+            $css_radius = '32px';
+        } else {
+            $css_radius = '16px';
+        }
+
+        // Apply color gradients
+        if ( $use_gradient ) {
+            $css_accent_bg = "linear-gradient(135deg, {$accent_1} 0%, {$accent_2} 100%)";
+        } else {
+            $css_accent_bg = $accent_1;
+        }
+
+        // Apply theme color tokens
+        if ( 'dark' === $theme_style ) {
+            $css_bg         = '#1e293b';
+            $css_border     = 'rgba(51, 65, 85, 0.7)';
+            $css_text       = '#f1f5f9';
+            $css_text_muted = '#94a3b8';
+            $css_shadow     = '0 15px 30px -10px rgba(0, 0, 0, 0.4)';
+            $css_backdrop   = 'none';
+            $css_player_bg  = 'rgba(30, 41, 59, 0.45)';
+        } elseif ( 'light' === $theme_style ) {
+            $css_bg         = '#ffffff';
+            $css_border     = 'rgba(226, 232, 240, 0.9)';
+            $css_text       = '#0f172a';
+            $css_text_muted = '#475569';
+            $css_shadow     = '0 8px 20px -4px rgba(0, 0, 0, 0.04), 0 6px 12px -5px rgba(0, 0, 0, 0.04)';
+            $css_backdrop   = 'none';
+            $css_player_bg  = 'rgba(241, 245, 249, 0.7)';
+        } elseif ( 'flat' === $theme_style ) {
+            $css_bg         = 'transparent';
+            $css_border     = 'transparent';
+            $css_text       = 'inherit';
+            $css_text_muted = 'color-mix(in srgb, currentColor 65%, transparent)';
+            $css_shadow     = 'none';
+            $css_backdrop   = 'none';
+            $css_player_bg  = 'rgba(0, 0, 0, 0.03)';
+        } elseif ( 'brutalism' === $theme_style ) {
+            $css_bg         = '#ffffff';
+            $css_border     = '#000000';
+            $css_text       = '#000000';
+            $css_text_muted = '#000000';
+            $css_shadow     = '6px 6px 0px 0px #000000';
+            $css_backdrop   = 'none';
+            $css_player_bg  = '#f4f4f0';
+        } else { // glass / default
+            $css_bg         = 'rgba(255, 255, 255, 0.45)';
+            $css_border     = 'rgba(226, 232, 240, 0.8)';
+            $css_text       = '#1e293b';
+            $css_text_muted = '#64748b';
+            $css_shadow     = '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05)';
+            $css_backdrop   = 'blur(12px)';
+            $css_player_bg  = 'rgba(255, 255, 255, 0.35)';
+        }
+
+        if ( ! empty( $custom_text ) ) {
+            $css_text = $custom_text;
+            // Optionally could also create a muted version, but using the selected color for text is key
+        }
+
+        if ( ! empty( $custom_text_muted ) ) {
+            $css_text_muted = $custom_text_muted;
+        }
 
         // Apply inline CSS styles to set CSS custom properties matching administrative layout options
         $custom_css = "
             :root {
-                --readio-accent: {$accent};
+                --readio-accent: {$accent_1};
                 --readio-accent-rgb: {$accent_rgb};
+                --readio-accent-bg: {$css_accent_bg};
+                --readio-bg: {$css_bg};
+                --readio-border: {$css_border};
+                --readio-text: {$css_text};
+                --readio-text-muted: {$css_text_muted};
+                --readio-button-text: {$button_text};
+                --readio-shadow: {$css_shadow};
+                --readio-radius: {$css_radius};
+                --readio-padding: {$css_padding};
+                --readio-font: {$css_font};
+                --readio-backdrop-filter: {$css_backdrop};
+                --readio-player-bg: {$css_player_bg};
             }
         ";
         wp_add_inline_style( 'readio-frontend-style', $custom_css );
@@ -132,20 +252,40 @@ class Readio_Frontend {
         $has_ai    = get_option( 'readio_enable_ai', true ) && ! empty( $api_key );
         $show_dl   = get_option( 'readio_show_download', true );
 
+        $theme_style = get_option( 'readio_theme_style', 'glass' );
+        $widget_class = 'readio-widget readio-theme-' . esc_attr( $theme_style );
+        $icon_style = get_option( 'readio_icon_style', 'emoji' );
+
+        $time_icon = '⏱️';
+        $word_icon = '✍️';
+        if ( 'fontawesome' === $icon_style ) {
+            $time_icon = '<i class="fa-solid fa-clock"></i>';
+            $word_icon = '<i class="fa-solid fa-pen-nib"></i>';
+        } elseif ( 'material' === $icon_style ) {
+            $time_icon = '<span class="material-icons" style="font-size:inherit;">timer</span>';
+            $word_icon = '<span class="material-icons" style="font-size:inherit;">edit</span>';
+        } elseif ( 'none' === $icon_style ) {
+            $time_icon = '';
+            $word_icon = '';
+        }
+
         ob_start();
         ?>
-        <div class="readio-widget" id="readio-widget-box" data-post-id="<?php echo esc_attr( $post->ID ); ?>">
-            <div class="readio-widget-header">
-                <div class="readio-stat-pill">
-                    <span class="readio-pill-icon">⏱️</span>
+        <div class="<?php echo esc_attr( $widget_class ); ?>" id="readio-widget-box" data-post-id="<?php echo esc_attr( $post->ID ); ?>">
+            <div class="readio-widget-header" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <div class="readio-stat-pill" style="display: flex; gap: 8px; align-items: center;">
+                    <?php if ( $time_icon ) : ?>
+                        <span class="readio-pill-icon"><?php echo $time_icon; ?></span>
+                    <?php endif; ?>
                     <span class="readio-pill-text">
                         <?php echo sprintf( esc_html__( 'Tiempo de lectura: %d min', 'readio' ), $time ); ?>
                     </span>
-                </div>
-                <div class="readio-stat-pill">
-                    <span class="readio-pill-icon">✍️</span>
+                    <span class="readio-pill-separator" style="color: var(--readio-text-muted); opacity: 0.5;">|</span>
+                    <?php if ( $word_icon ) : ?>
+                        <span class="readio-pill-icon"><?php echo $word_icon; ?></span>
+                    <?php endif; ?>
                     <span class="readio-pill-text">
-                        <?php echo sprintf( _n( '%s palabra', '%s palabras', $words, 'readio' ), number_format_i18n( $words ) ); ?>
+                        <?php echo esc_html( sprintf( _n( '%s palabra', '%s palabras', $words, 'readio' ), number_format_i18n( $words ) ) ); ?>
                     </span>
                 </div>
             </div>

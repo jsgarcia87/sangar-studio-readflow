@@ -64,6 +64,22 @@ jQuery(document).ready(function($) {
     }
 
     // -------------------------------------------------------------
+    // 4.1 CONDITIONAL ACCORDION FOR GRADIENT FIELDS
+    // -------------------------------------------------------------
+    const useGradientToggle = $('#readio_use_gradient');
+    const gradientRow       = $('.readio-conditional-gradient-row');
+
+    if (useGradientToggle.length && gradientRow.length) {
+        useGradientToggle.on('change', function() {
+            if ($(this).is(':checked')) {
+                gradientRow.slideDown(250);
+            } else {
+                gradientRow.slideUp(250);
+            }
+        });
+    }
+
+    // -------------------------------------------------------------
     // 5. LIVE CONNECTION TESTER (OPENAI SPEECH API)
     // -------------------------------------------------------------
     const testApiBtn       = $('#readio-btn-test-api');

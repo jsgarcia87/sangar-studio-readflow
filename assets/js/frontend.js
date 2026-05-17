@@ -326,6 +326,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // -------------------------------------------------------------
 
     playBtn.addEventListener('click', function() {
+        // Unlock HTML5 Audio for mobile browsers
+        if (!audioLoaded) {
+            audioPlayer.play().catch(e => {
+                // Ignore the error, this is just to unlock the audio element
+                // for the user session on mobile devices.
+            });
+            audioPlayer.pause();
+        }
+
         if (isAiMode) {
             playAiAudio();
         } else {
