@@ -1,6 +1,6 @@
 <?php
 /**
- * Readio TTS Handler Class
+ * Sangar Studio ReadFlow TTS Handler Class
  * Handles speech generation, split-chunking, binary concatenation, and local caching.
  */
 
@@ -8,12 +8,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Readio_TTS {
+class Sangar_Studio_ReadFlow_TTS {
 
     public function __construct() {
         // AJAX: Retrieve cached audio or generate on-the-fly
-        add_action( 'wp_ajax_readio_get_audio', [ $this, 'ajax_get_audio' ] );
-        add_action( 'wp_ajax_nopriv_readio_get_audio', [ $this, 'ajax_get_audio' ] );
+        add_action( 'wp_ajax_sangar_readflow_get_audio', [ $this, 'ajax_get_audio' ] );
+        add_action( 'wp_ajax_nopriv_sangar_readflow_get_audio', [ $this, 'ajax_get_audio' ] );
 
         // Invalidating and pre-generating cached audio on post updates
         add_action( 'save_post', [ $this, 'handle_save_post' ], 10, 3 );
@@ -108,7 +108,7 @@ class Readio_TTS {
             $body = wp_remote_retrieve_body( $response );
 
             if ( $code !== 200 ) {
-                $error_msg = sprintf( __( 'Error en API de OpenAI (Código HTTP %d)', 'readio' ), $code );
+                $error_msg = sprintf( __( 'Error en API de OpenAI (Código HTTP %d)', 'sangar-studio-readflow' ), $code );
                 $json = json_decode( $body, true );
                 if ( ! empty( $json['error']['message'] ) ) {
                     $error_msg = $json['error']['message'];
@@ -130,26 +130,26 @@ class Readio_TTS {
     public function generate_audio_for_post( $post_id ) {
         $post = get_post( $post_id );
         if ( ! $post ) {
-            return new WP_Error( 'invalid_post', __( 'El post no existe.', 'readio' ) );
+            return new WP_Error( 'invalid_post', __( 'El post no existe.', 'sangar-studio-readflow' ) );
         }
 
         // Verify post status and authorization
         if ( 'publish' !== $post->post_status ) {
-            return new WP_Error( 'unauthorized', __( 'No tienes permisos para escuchar este post.', 'readio' ) );
+            return new WP_Error( 'unauthorized', __( 'No tienes permisos para escuchar este post.', 'sangar-studio-readflow' ) );
         }
 
         // Verify post is not password protected
         if ( ! empty( $post->post_password ) ) {
-            return new WP_Error( 'password_required', __( 'Este post está protegido por contraseña.', 'readio' ) );
+            return new WP_Error( 'password_required', __( 'Este post está protegido por contraseña.', 'sangar-studio-readflow' ) );
         }
 
-        $api_key = get_option( 'readio_api_key', '' );
+        $api_key = get_option( 'sangar_readflow_api_key', '' );
         if ( empty( $api_key ) ) {
-            return new WP_Error( 'missing_api_key', __( 'No se ha configurado la OpenAI API Key.', 'readio' ) );
+            return new WP_Error( 'missing_api_key', __( 'No se ha configurado la OpenAI API Key.', 'sangar-studio-readflow' ) );
         }
 
-        $voice = get_option( 'readio_voice', 'alloy' );
-        $model = get_option( 'readio_model', 'tts-1' );
+        $voice = get_option( 'sangar_readflow_voice', 'alloy' );
+        $model = get_option( 'sangar_readflow_model', 'tts-1' );
 
         // Strip HTML, blocks, and clean up the post content
         $content = $post->post_content;
@@ -162,7 +162,7 @@ class Readio_TTS {
         $text = trim( $text );
 
         if ( empty( $text ) ) {
-            return new WP_Error( 'empty_content', __( 'El post no contiene texto legible.', 'readio' ) );
+            return new WP_Error( 'empty_content', __( 'El post no contiene texto legible.', 'sangar-studio-readflow' ) );
         }
 
         // Fetch audio stream
@@ -174,22 +174,22 @@ class Readio_TTS {
 
         // Define local caching directory path and public URL
         $upload_dir = wp_upload_dir();
-        $readio_dir = $upload_dir['basedir'] . '/readio';
-        $file_path  = $readio_dir . '/post-' . $post_id . '.mp3';
+        $readflow_dir = $upload_dir['basedir'] . '/sangar-studio-readflow';
+        $file_path  = $readflow_dir . '/post-' . $post_id . '.mp3';
 
         // Make sure caching folder exists
-        if ( ! file_exists( $readio_dir ) ) {
-            wp_mkdir_p( $readio_dir );
+        if ( ! file_exists( $readflow_dir ) ) {
+            wp_mkdir_p( $readflow_dir );
         }
 
         // Write binary MP3 data to disk
         $result = file_put_contents( $file_path, $audio_data );
         
         if ( $result === false ) {
-            return new WP_Error( 'file_write_error', __( 'Error al escribir el archivo de audio en disco.', 'readio' ) );
+            return new WP_Error( 'file_write_error', __( 'Error al escribir el archivo de audio en disco.', 'sangar-studio-readflow' ) );
         }
 
-        return $upload_dir['baseurl'] . '/readio/post-' . $post_id . '.mp3';
+        return $upload_dir['baseurl'] . '/sangar-studio-readflow/post-' . $post_id . '.mp3';
     }
 
     /**
@@ -197,9 +197,9 @@ class Readio_TTS {
      */
     public function clear_post_audio_cache( $post_id ) {
         $upload_dir = wp_upload_dir();
-        $file_path  = $upload_dir['basedir'] . '/readio/post-' . $post_id . '.mp3';
+        $file_path  = $upload_dir['basedir'] . '/sangar-studio-readflow/post-' . $post_id . '.mp3';
         if ( file_exists( $file_path ) ) {
-            unlink( $file_path );
+            wp_delete_file( $file_path );
         }
     }
 
@@ -226,9 +226,9 @@ class Readio_TTS {
         $this->clear_post_audio_cache( $post_id );
 
         // If automatic pre-generation is enabled and post is published
-        $auto_generate = get_option( 'readio_auto_generate', false );
-        $enable_ai     = get_option( 'readio_enable_ai', true );
-        $api_key       = get_option( 'readio_api_key', '' );
+        $auto_generate = get_option( 'sangar_readflow_auto_generate', false );
+        $enable_ai     = get_option( 'sangar_readflow_enable_ai', true );
+        $api_key       = get_option( 'sangar_readflow_api_key', '' );
 
         if ( $auto_generate && $enable_ai && ! empty( $api_key ) && 'publish' === $post->post_status ) {
             // Generate the audio so it is ready for the first reader
@@ -240,30 +240,30 @@ class Readio_TTS {
      * AJAX Action: Return existing cached audio URL, or generate and cache it.
      */
     public function ajax_get_audio() {
-        check_ajax_referer( 'readio_frontend_nonce', 'nonce' );
+        check_ajax_referer( 'sangar_readflow_frontend_nonce', 'nonce' );
 
-        $post_id = isset( $_POST['post_id'] ) ? intval( $_POST['post_id'] ) : 0;
+        $post_id = isset( $_POST['post_id'] ) ? intval( wp_unslash( $_POST['post_id'] ) ) : 0;
         if ( ! $post_id ) {
-            wp_send_json_error( __( 'ID de entrada inválido.', 'readio' ) );
+            wp_send_json_error( __( 'ID de entrada inválido.', 'sangar-studio-readflow' ) );
         }
 
         $post = get_post( $post_id );
         if ( ! $post || 'post' !== $post->post_type ) {
-            wp_send_json_error( __( 'El post no existe.', 'readio' ) );
+            wp_send_json_error( __( 'El post no existe.', 'sangar-studio-readflow' ) );
         }
 
         // Protect drafts, private posts, and password protected content
         if ( 'publish' !== $post->post_status ) {
-            wp_send_json_error( __( 'No tienes permisos para escuchar este post.', 'readio' ) );
+            wp_send_json_error( __( 'No tienes permisos para escuchar este post.', 'sangar-studio-readflow' ) );
         }
 
         if ( ! empty( $post->post_password ) ) {
-            wp_send_json_error( __( 'Este post está protegido por contraseña.', 'readio' ) );
+            wp_send_json_error( __( 'Este post está protegido por contraseña.', 'sangar-studio-readflow' ) );
         }
 
         $upload_dir = wp_upload_dir();
-        $file_path  = $upload_dir['basedir'] . '/readio/post-' . $post_id . '.mp3';
-        $file_url   = $upload_dir['baseurl'] . '/readio/post-' . $post_id . '.mp3';
+        $file_path  = $upload_dir['basedir'] . '/sangar-studio-readflow/post-' . $post_id . '.mp3';
+        $file_url   = $upload_dir['baseurl'] . '/sangar-studio-readflow/post-' . $post_id . '.mp3';
 
         // 1. Check if the audio file has already been generated and is valid
         if ( file_exists( $file_path ) && filesize( $file_path ) > 0 ) {
@@ -274,9 +274,9 @@ class Readio_TTS {
         }
 
         // 2. Prevent unauthenticated API abuse / guest-initiated on-demand generation if option is disabled
-        $allow_guest_generation = get_option( 'readio_allow_guest_generation', false );
+        $allow_guest_generation = get_option( 'sangar_readflow_allow_guest_generation', false );
         if ( ! is_user_logged_in() && ! $allow_guest_generation ) {
-            wp_send_json_error( __( 'La generación de audio bajo demanda para invitados está deshabilitada.', 'readio' ) );
+            wp_send_json_error( __( 'La generación de audio bajo demanda para invitados está deshabilitada.', 'sangar-studio-readflow' ) );
         }
 
         // 3. Fallback to generating it if it doesn't exist

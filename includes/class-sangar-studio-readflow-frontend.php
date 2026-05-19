@@ -1,6 +1,6 @@
 <?php
 /**
- * Readio Frontend Widget Class
+ * Sangar Studio ReadFlow Frontend Widget Class
  * Renders the high-fidelity reader widget and enqueues scripts.
  */
 
@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Readio_Frontend {
+class Sangar_Studio_ReadFlow_Frontend {
 
     public function __construct() {
         // Enqueue styles and scripts
@@ -17,15 +17,16 @@ class Readio_Frontend {
         // Automatic widget insertion hook
         add_filter( 'the_content', [ $this, 'insert_widget' ] );
 
-        // Register shortcode
+        // Register shortcodes
         add_shortcode( 'readio', [ $this, 'render_shortcode' ] );
+        add_shortcode( 'sangar-studio-readflow', [ $this, 'render_shortcode' ] );
     }
 
     /**
      * Calculate reading time based on user-configured Words Per Minute (WPM).
      */
     public function calculate_reading_time( $content ) {
-        $wpm = get_option( 'readio_wpm', 200 );
+        $wpm = get_option( 'sangar_readflow_wpm', 200 );
         if ( ! $wpm || $wpm <= 0 ) {
             $wpm = 200;
         }
@@ -57,46 +58,46 @@ class Readio_Frontend {
         }
 
         // Get option values
-        $api_key       = get_option( 'readio_api_key', '' );
-        $enable_ai     = get_option( 'readio_enable_ai', true ) && ! empty( $api_key );
-        $accent_1      = get_option( 'readio_accent_color', '#6366f1' );
-        $accent_2      = get_option( 'readio_accent_color_2', '#818cf8' );
-        $use_gradient  = get_option( 'readio_use_gradient', false );
-        $theme_style   = get_option( 'readio_theme_style', 'glass' );
-        $border_radius = get_option( 'readio_border_radius', 'rounded' );
-        $font_family   = get_option( 'readio_font_family', 'inherit' );
-        $padding_scale = get_option( 'readio_padding_scale', 'default' );
-        $icon_style    = get_option( 'readio_icon_style', 'emoji' );
-        $custom_text   = get_option( 'readio_text_color', '' );
-        $custom_text_muted = get_option( 'readio_text_muted_color', '' );
-        $button_text   = get_option( 'readio_button_text_color', '#ffffff' );
+        $api_key       = get_option( 'sangar_readflow_api_key', '' );
+        $enable_ai     = get_option( 'sangar_readflow_enable_ai', true ) && ! empty( $api_key );
+        $accent_1      = get_option( 'sangar_readflow_accent_color', '#6366f1' );
+        $accent_2      = get_option( 'sangar_readflow_accent_color_2', '#818cf8' );
+        $use_gradient  = get_option( 'sangar_readflow_use_gradient', false );
+        $theme_style   = get_option( 'sangar_readflow_theme_style', 'glass' );
+        $border_radius = get_option( 'sangar_readflow_border_radius', 'rounded' );
+        $font_family   = get_option( 'sangar_readflow_font_family', 'inherit' );
+        $padding_scale = get_option( 'sangar_readflow_padding_scale', 'default' );
+        $icon_style    = get_option( 'sangar_readflow_icon_style', 'emoji' );
+        $custom_text   = get_option( 'sangar_readflow_text_color', '' );
+        $custom_text_muted = get_option( 'sangar_readflow_text_muted_color', '' );
+        $button_text   = get_option( 'sangar_readflow_button_text_color', '#ffffff' );
 
         // Enqueue icon libraries if needed
         if ( 'fontawesome' === $icon_style ) {
-            wp_enqueue_style( 'readio-fontawesome', READIO_URL . 'assets/fonts/fontawesome/css/all.min.css', [], null );
+            wp_enqueue_style( 'sangar-readflow-fontawesome', SANGAR_STUDIO_READFLOW_URL . 'assets/fonts/fontawesome/css/all.min.css', [], null );
         } elseif ( 'material' === $icon_style ) {
-            wp_enqueue_style( 'readio-material-icons', READIO_URL . 'assets/fonts/material/material-icons.css', [], null );
+            wp_enqueue_style( 'sangar-readflow-material-icons', SANGAR_STUDIO_READFLOW_URL . 'assets/fonts/material/material-icons.css', [], null );
         }
 
         // Enqueue fonts depending on administrative setting
         if ( 'inter' === $font_family ) {
-            wp_enqueue_style( 'readio-font-inter', READIO_URL . 'assets/fonts/google/inter.css', [], null );
+            wp_enqueue_style( 'sangar-readflow-font-inter', SANGAR_STUDIO_READFLOW_URL . 'assets/fonts/google/inter.css', [], null );
             $css_font = "'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
         } elseif ( 'playfair' === $font_family ) {
-            wp_enqueue_style( 'readio-font-playfair', READIO_URL . 'assets/fonts/google/playfair.css', [], null );
+            wp_enqueue_style( 'sangar-readflow-font-playfair', SANGAR_STUDIO_READFLOW_URL . 'assets/fonts/google/playfair.css', [], null );
             $css_font = "'Playfair Display', Georgia, serif";
         } elseif ( 'outfit' === $font_family ) {
-            wp_enqueue_style( 'readio-font-outfit', READIO_URL . 'assets/fonts/google/outfit.css', [], null );
+            wp_enqueue_style( 'sangar-readflow-font-outfit', SANGAR_STUDIO_READFLOW_URL . 'assets/fonts/google/outfit.css', [], null );
             $css_font = "'Outfit', sans-serif";
         } else {
             $css_font = 'inherit';
         }
 
         // Enqueue stylesheet
-        wp_enqueue_style( 'readio-frontend-style', READIO_URL . 'assets/css/frontend.css', [], READIO_VERSION );
+        wp_enqueue_style( 'sangar-readflow-frontend-style', SANGAR_STUDIO_READFLOW_URL . 'assets/css/frontend.css', [], SANGAR_STUDIO_READFLOW_VERSION );
         
         // Enqueue custom player logic
-        wp_enqueue_script( 'readio-frontend-script', READIO_URL . 'assets/js/frontend.js', [], READIO_VERSION, true );
+        wp_enqueue_script( 'sangar-readflow-frontend-script', SANGAR_STUDIO_READFLOW_URL . 'assets/js/frontend.js', [], SANGAR_STUDIO_READFLOW_VERSION, true );
 
         // Convert HEX accent color to RGB for smooth alpha transparency overlays in CSS
         $accent_rgb = $this->hex2rgb( $accent_1 );
@@ -171,7 +172,6 @@ class Readio_Frontend {
 
         if ( ! empty( $custom_text ) ) {
             $css_text = $custom_text;
-            // Optionally could also create a muted version, but using the selected color for text is key
         }
 
         if ( ! empty( $custom_text_muted ) ) {
@@ -179,9 +179,9 @@ class Readio_Frontend {
         }
 
         // Get wave customizer options
-        $bars_count     = (int) get_option( 'readio_wave_bars_count', 5 );
-        $bars_style     = get_option( 'readio_wave_bars_style', 'classic' );
-        $bars_anim      = get_option( 'readio_wave_bars_animation', 'energetic' );
+        $bars_count     = (int) get_option( 'sangar_readflow_wave_bars_count', 5 );
+        $bars_style     = get_option( 'sangar_readflow_wave_bars_style', 'classic' );
+        $bars_anim      = get_option( 'sangar_readflow_wave_bars_animation', 'energetic' );
 
         // Dynamic metrics based on chosen visual style
         $bar_width        = '3px';
@@ -211,26 +211,26 @@ class Readio_Frontend {
         // Apply inline CSS styles to set CSS custom properties matching administrative layout options
         $custom_css = "
             :root {
-                --readio-accent: {$accent_1};
-                --readio-accent-rgb: {$accent_rgb};
-                --readio-accent-bg: {$css_accent_bg};
-                --readio-bg: {$css_bg};
-                --readio-border: {$css_border};
-                --readio-text: {$css_text};
-                --readio-text-muted: {$css_text_muted};
-                --readio-button-text: {$button_text};
-                --readio-shadow: {$css_shadow};
-                --readio-radius: {$css_radius};
-                --readio-padding: {$css_padding};
-                --readio-font: {$css_font};
-                --readio-backdrop-filter: {$css_backdrop};
-                --readio-player-bg: {$css_player_bg};
-                --readio-wave-align: {$align_items};
-                --readio-wave-bar-width: {$bar_width};
-                --readio-wave-bar-gap: {$bar_gap};
-                --readio-wave-bar-radius: {$bar_radius};
-                --readio-wave-bar-origin: {$transform_origin};
-                --readio-wave-bar-duration: {$anim_duration};
+                --sangar-readflow-accent: {$accent_1};
+                --sangar-readflow-accent-rgb: {$accent_rgb};
+                --sangar-readflow-accent-bg: {$css_accent_bg};
+                --sangar-readflow-bg: {$css_bg};
+                --sangar-readflow-border: {$css_border};
+                --sangar-readflow-text: {$css_text};
+                --sangar-readflow-text-muted: {$css_text_muted};
+                --sangar-readflow-button-text: {$button_text};
+                --sangar-readflow-shadow: {$css_shadow};
+                --sangar-readflow-radius: {$css_radius};
+                --sangar-readflow-padding: {$css_padding};
+                --sangar-readflow-font: {$css_font};
+                --sangar-readflow-backdrop-filter: {$css_backdrop};
+                --sangar-readflow-player-bg: {$css_player_bg};
+                --sangar-readflow-wave-align: {$align_items};
+                --sangar-readflow-wave-bar-width: {$bar_width};
+                --sangar-readflow-wave-bar-gap: {$bar_gap};
+                --sangar-readflow-wave-bar-radius: {$bar_radius};
+                --sangar-readflow-wave-bar-origin: {$transform_origin};
+                --sangar-readflow-wave-bar-duration: {$anim_duration};
             }
         ";
 
@@ -272,23 +272,23 @@ class Readio_Frontend {
             }
         }
 
-        wp_add_inline_style( 'readio-frontend-style', $custom_css );
+        wp_add_inline_style( 'sangar-readflow-frontend-style', $custom_css );
 
         // Pass security tokens, paths, and localized text lines safely to JavaScript
-        wp_localize_script( 'readio-frontend-script', 'readio_obj', [
+        wp_localize_script( 'sangar-readflow-frontend-script', 'sangar_readflow_obj', [
             'ajax_url'  => admin_url( 'admin-ajax.php' ),
-            'nonce'     => wp_create_nonce( 'readio_frontend_nonce' ),
+            'nonce'     => wp_create_nonce( 'sangar_readflow_frontend_nonce' ),
             'post_id'   => get_the_ID(),
             'has_ai'    => $enable_ai,
             'locale'    => get_locale(),
             'text'      => [
-                'play'       => __( 'Escuchar Entrada', 'readio' ),
-                'pause'      => __( 'Pausar', 'readio' ),
-                'generating' => __( 'Generando audio de IA...', 'readio' ),
-                'buffering'  => __( 'Cargando...', 'readio' ),
-                'playing_ai' => __( 'Reproduciendo Voz IA', 'readio' ),
-                'playing_nat'=> __( 'Reproduciendo Voz Local', 'readio' ),
-                'error'      => __( 'Fallo al cargar audio.', 'readio' ),
+                'play'       => __( 'Escuchar Entrada', 'sangar-studio-readflow' ),
+                'pause'      => __( 'Pausar', 'sangar-studio-readflow' ),
+                'generating' => __( 'Generando audio de IA...', 'sangar-studio-readflow' ),
+                'buffering'  => __( 'Cargando...', 'sangar-studio-readflow' ),
+                'playing_ai' => __( 'Reproduciendo Voz IA', 'sangar-studio-readflow' ),
+                'playing_nat'=> __( 'Reproduciendo Voz Local', 'sangar-studio-readflow' ),
+                'error'      => __( 'Fallo al cargar audio.', 'sangar-studio-readflow' ),
             ]
         ]);
     }
@@ -323,13 +323,13 @@ class Readio_Frontend {
         $time      = $read_data['minutes'];
         $words     = $read_data['word_count'];
         
-        $api_key   = get_option( 'readio_api_key', '' );
-        $has_ai    = get_option( 'readio_enable_ai', true ) && ! empty( $api_key );
-        $show_dl   = get_option( 'readio_show_download', true );
+        $api_key   = get_option( 'sangar_readflow_api_key', '' );
+        $has_ai    = get_option( 'sangar_readflow_enable_ai', true ) && ! empty( $api_key );
+        $show_dl   = get_option( 'sangar_readflow_show_download', true );
 
-        $theme_style = get_option( 'readio_theme_style', 'glass' );
+        $theme_style = get_option( 'sangar_readflow_theme_style', 'glass' );
         $widget_class = 'readio-widget readio-theme-' . esc_attr( $theme_style );
-        $icon_style = get_option( 'readio_icon_style', 'emoji' );
+        $icon_style = get_option( 'sangar_readflow_icon_style', 'emoji' );
 
         $time_icon = '⏱️';
         $word_icon = '✍️';
@@ -350,17 +350,17 @@ class Readio_Frontend {
             <div class="readio-widget-header" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
                 <div class="readio-stat-pill" style="display: flex; gap: 8px; align-items: center;">
                     <?php if ( $time_icon ) : ?>
-                        <span class="readio-pill-icon"><?php echo $time_icon; ?></span>
+                        <span class="readio-pill-icon"><?php echo wp_kses_post( $time_icon ); ?></span>
                     <?php endif; ?>
                     <span class="readio-pill-text">
-                        <?php echo sprintf( esc_html__( 'Tiempo de lectura: %d min', 'readio' ), $time ); ?>
+                        <?php printf( esc_html__( 'Tiempo de lectura: %d min', 'sangar-studio-readflow' ), absint( $time ) ); ?>
                     </span>
-                    <span class="readio-pill-separator" style="color: var(--readio-text-muted); opacity: 0.5;">|</span>
+                    <span class="readio-pill-separator" style="color: var(--sangar-readflow-text-muted); opacity: 0.5;">|</span>
                     <?php if ( $word_icon ) : ?>
-                        <span class="readio-pill-icon"><?php echo $word_icon; ?></span>
+                        <span class="readio-pill-icon"><?php echo wp_kses_post( $word_icon ); ?></span>
                     <?php endif; ?>
                     <span class="readio-pill-text">
-                        <?php echo esc_html( sprintf( _n( '%s palabra', '%s palabras', $words, 'readio' ), number_format_i18n( $words ) ) ); ?>
+                        <?php echo esc_html( sprintf( _n( '%s palabra', '%s palabras', $words, 'sangar-studio-readflow' ), number_format_i18n( $words ) ) ); ?>
                     </span>
                 </div>
             </div>
@@ -368,7 +368,7 @@ class Readio_Frontend {
             <div class="readio-player-body">
                 <div class="readio-row">
                     <!-- Premium Action button -->
-                    <button type="button" class="readio-action-play" id="readio-play-btn" aria-label="<?php esc_attr_e( 'Escuchar post', 'readio' ); ?>">
+                    <button type="button" class="readio-action-play" id="readio-play-btn" aria-label="<?php esc_attr_e( 'Escuchar post', 'sangar-studio-readflow' ); ?>">
                         <span class="readio-play-icon-wrap">
                             <!-- SVG Play -->
                             <svg class="readio-svg-play" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -383,13 +383,13 @@ class Readio_Frontend {
                                 <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="36 12"/>
                             </svg>
                         </span>
-                        <span class="readio-play-label" id="readio-play-label"><?php esc_html_e( 'Escuchar Entrada', 'readio' ); ?></span>
+                        <span class="readio-play-label" id="readio-play-label"><?php esc_html_e( 'Escuchar Entrada', 'sangar-studio-readflow' ); ?></span>
                     </button>
 
                     <!-- Interactive Micro-Animation Sound Wave bars (animates during play) -->
                     <div class="readio-wave" id="readio-wave-animation">
                         <?php 
-                        $bars_count = (int) get_option( 'readio_wave_bars_count', 5 );
+                        $bars_count = (int) get_option( 'sangar_readflow_wave_bars_count', 5 );
                         for ( $i = 0; $i < $bars_count; $i++ ) {
                             echo '<span class="readio-wave-bar"></span>';
                         }
@@ -411,7 +411,7 @@ class Readio_Frontend {
                 <div class="readio-footer-controls" id="readio-footer-controls" style="display: none;">
                     <!-- Speed configuration button -->
                     <div class="readio-speed-control">
-                        <button type="button" class="readio-control-btn" id="readio-speed-toggle-btn" title="<?php esc_attr_e( 'Velocidad de audio', 'readio' ); ?>">
+                        <button type="button" class="readio-control-btn" id="readio-speed-toggle-btn" title="<?php esc_attr_e( 'Velocidad de audio', 'sangar-studio-readflow' ); ?>">
                             <span id="readio-current-speed">1.0x</span>
                         </button>
                         <ul class="readio-speed-menu" id="readio-speed-dropdown">
@@ -427,13 +427,13 @@ class Readio_Frontend {
                     <div class="readio-mode-indicator">
                         <span class="readio-indicator-dot"></span>
                         <span class="readio-indicator-text" id="readio-mode-label">
-                            <?php echo $has_ai ? esc_html__( 'Voz Inteligente', 'readio' ) : esc_html__( 'Voz del Navegador', 'readio' ); ?>
+                            <?php echo $has_ai ? esc_html__( 'Voz Inteligente', 'sangar-studio-readflow' ) : esc_html__( 'Voz del Navegador', 'sangar-studio-readflow' ); ?>
                         </span>
                     </div>
 
                     <!-- Direct File Download Link -->
                     <?php if ( $has_ai && $show_dl ) : ?>
-                        <a href="#" class="readio-control-btn readio-btn-download" id="readio-btn-download" download title="<?php esc_attr_e( 'Descargar archivo MP3', 'readio' ); ?>" aria-label="<?php esc_attr_e( 'Descargar MP3', 'readio' ); ?>">
+                        <a href="#" class="readio-control-btn readio-btn-download" id="readio-btn-download" download title="<?php esc_attr_e( 'Descargar archivo MP3', 'sangar-studio-readflow' ); ?>" aria-label="<?php esc_attr_e( 'Descargar MP3', 'sangar-studio-readflow' ); ?>">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
                                 <path d="M5 20H19V18H5V20ZM12 2L12 14M12 14L8 10M12 14L16 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
@@ -462,7 +462,7 @@ class Readio_Frontend {
             return $content;
         }
 
-        $position = get_option( 'readio_position', 'before' );
+        $position = get_option( 'sangar_readflow_position', 'before' );
 
         // Manual embedding overrides automated inclusion
         if ( 'manual' === $position ) {
