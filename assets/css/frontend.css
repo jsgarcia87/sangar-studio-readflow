@@ -5,33 +5,33 @@
 
 :root {
     /* Default fallbacks if PHP does not overwrite */
-    --sangar-readflow-accent: #6366f1;
-    --sangar-readflow-accent-rgb: 99, 102, 241;
-    --sangar-readflow-accent-bg: #6366f1;
-    --sangar-readflow-bg: rgba(255, 255, 255, 0.8);
-    --sangar-readflow-text: #1e293b;
-    --sangar-readflow-text-muted: #64748b;
-    --sangar-readflow-border: rgba(226, 232, 240, 0.8);
-    --sangar-readflow-radius: 16px;
-    --sangar-readflow-padding: 24px;
-    --sangar-readflow-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    --sangar-readflow-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-    --sangar-readflow-backdrop-filter: blur(8px);
-    --sangar-readflow-player-bg: rgba(255, 255, 255, 0.35);
+    --ssrf-accent: #6366f1;
+    --ssrf-accent-rgb: 99, 102, 241;
+    --ssrf-accent-bg: #6366f1;
+    --ssrf-bg: rgba(255, 255, 255, 0.8);
+    --ssrf-text: #1e293b;
+    --ssrf-text-muted: #64748b;
+    --ssrf-border: rgba(226, 232, 240, 0.8);
+    --ssrf-radius: 16px;
+    --ssrf-padding: 24px;
+    --ssrf-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --ssrf-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    --ssrf-backdrop-filter: blur(8px);
+    --ssrf-player-bg: rgba(255, 255, 255, 0.35);
 }
 
 /* Base Widget Container */
 .readio-widget {
-    background: var(--sangar-readflow-bg);
-    border: 1px solid var(--sangar-readflow-border);
-    border-radius: var(--sangar-readflow-radius);
-    padding: var(--sangar-readflow-padding);
+    background: var(--ssrf-bg);
+    border: 1px solid var(--ssrf-border);
+    border-radius: var(--ssrf-radius);
+    padding: var(--ssrf-padding);
     margin: 32px 0;
-    box-shadow: var(--sangar-readflow-shadow);
-    backdrop-filter: var(--sangar-readflow-backdrop-filter);
-    -webkit-backdrop-filter: var(--sangar-readflow-backdrop-filter);
-    font-family: var(--sangar-readflow-font);
-    color: var(--sangar-readflow-text) !important;
+    box-shadow: var(--ssrf-shadow);
+    backdrop-filter: var(--ssrf-backdrop-filter);
+    -webkit-backdrop-filter: var(--ssrf-backdrop-filter);
+    font-family: var(--ssrf-font);
+    color: var(--ssrf-text) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-sizing: border-box;
 }
@@ -48,10 +48,10 @@
         background: rgba(15, 23, 42, 0.65);
         border-color: rgba(51, 65, 85, 0.5);
         box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
-        --sangar-readflow-text: #f1f5f9;
-        --sangar-readflow-text-muted: #94a3b8;
-        --sangar-readflow-border: rgba(51, 65, 85, 0.5);
-        --sangar-readflow-player-bg: rgba(30, 41, 59, 0.45);
+        --ssrf-text: #f1f5f9;
+        --ssrf-text-muted: #94a3b8;
+        --ssrf-border: rgba(51, 65, 85, 0.5);
+        --ssrf-player-bg: rgba(30, 41, 59, 0.45);
     }
 }
 
@@ -66,15 +66,15 @@
 .readio-stat-pill {
     display: flex;
     align-items: center;
-    background: rgba(var(--sangar-readflow-accent-rgb), 0.06);
-    border: 1px solid rgba(var(--sangar-readflow-accent-rgb), 0.12);
+    background: rgba(var(--ssrf-accent-rgb), 0.06);
+    border: 1px solid rgba(var(--ssrf-accent-rgb), 0.12);
     padding: 6px 14px;
     border-radius: 99px;
     transition: all 0.2s ease;
 }
 
 .readio-stat-pill:hover {
-    background: rgba(var(--sangar-readflow-accent-rgb), 0.1);
+    background: rgba(var(--ssrf-accent-rgb), 0.1);
     transform: translateY(-1px);
 }
 
@@ -88,13 +88,13 @@
 .readio-pill-text {
     font-size: 13px;
     font-weight: 600;
-    color: var(--sangar-readflow-accent);
+    color: var(--ssrf-accent);
     letter-spacing: -0.01em;
 }
 
 /* Player Panel Styling */
 .readio-player-body {
-    background: var(--sangar-readflow-player-bg);
+    background: var(--ssrf-player-bg);
     border-radius: 12px;
     padding: 16px;
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -113,15 +113,15 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: var(--sangar-readflow-accent-bg);
-    color: var(--sangar-readflow-button-text, #ffffff) !important;
+    background: var(--ssrf-accent-bg);
+    color: var(--ssrf-button-text, #ffffff) !important;
     border: none;
     padding: 12px 24px;
     border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(var(--sangar-readflow-accent-rgb), 0.35);
+    box-shadow: 0 4px 14px rgba(var(--ssrf-accent-rgb), 0.35);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     outline: none;
 }
@@ -129,12 +129,12 @@
 .readio-action-play:hover {
     filter: brightness(1.08);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(var(--sangar-readflow-accent-rgb), 0.45);
+    box-shadow: 0 6px 20px rgba(var(--ssrf-accent-rgb), 0.45);
 }
 
 .readio-action-play:active {
     transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(var(--sangar-readflow-accent-rgb), 0.3);
+    box-shadow: 0 2px 10px rgba(var(--ssrf-accent-rgb), 0.3);
 }
 
 .readio-play-icon-wrap {
@@ -165,18 +165,18 @@
 /* Wave Sound Animation */
 .readio-wave {
     display: flex;
-    align-items: var(--sangar-readflow-wave-align, flex-end);
-    gap: var(--sangar-readflow-wave-bar-gap, 4px);
+    align-items: var(--ssrf-wave-align, flex-end);
+    gap: var(--ssrf-wave-bar-gap, 4px);
     height: 24px;
     padding: 2px;
 }
 
 .readio-wave-bar {
-    width: var(--sangar-readflow-wave-bar-width, 3px);
+    width: var(--ssrf-wave-bar-width, 3px);
     height: 100%;
-    background: var(--sangar-readflow-accent-bg, var(--sangar-readflow-accent, #6366f1));
-    border-radius: var(--sangar-readflow-wave-bar-radius, 3px);
-    transform-origin: var(--sangar-readflow-wave-bar-origin, bottom);
+    background: var(--ssrf-accent-bg, var(--ssrf-accent, #6366f1));
+    border-radius: var(--ssrf-wave-bar-radius, 3px);
+    transform-origin: var(--ssrf-wave-bar-origin, bottom);
     transition: transform 0.2s ease, opacity 0.2s ease;
     opacity: 0.35;
 }
@@ -189,7 +189,7 @@
 
 /* Apply bounce ONLY when playing is active */
 .readio-wave.playing .readio-wave-bar {
-    animation: readio-wave-bounce var(--sangar-readflow-wave-bar-duration, 0.8s) ease-in-out infinite;
+    animation: readio-wave-bounce var(--ssrf-wave-bar-duration, 0.8s) ease-in-out infinite;
     opacity: 0.85;
 }
 
@@ -214,7 +214,7 @@
 .readio-time-text {
     font-size: 11px;
     font-weight: 500;
-    color: var(--sangar-readflow-text-muted) !important;
+    color: var(--ssrf-text-muted) !important;
     font-variant-numeric: tabular-nums;
     min-width: 32px;
 }
@@ -223,7 +223,7 @@
     position: relative;
     flex-grow: 1;
     height: 6px;
-    background: rgba(var(--sangar-readflow-accent-rgb), 0.15);
+    background: rgba(var(--ssrf-accent-rgb), 0.15);
     border-radius: 99px;
     cursor: pointer;
     transition: height 0.2s ease;
@@ -238,7 +238,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    background: var(--sangar-readflow-accent-bg);
+    background: var(--ssrf-accent-bg);
     border-radius: 99px;
     width: 0%;
     pointer-events: none;
@@ -252,7 +252,7 @@
     height: 14px;
     border-radius: 50%;
     background: #ffffff;
-    border: 3px solid var(--sangar-readflow-accent);
+    border: 3px solid var(--ssrf-accent);
     transform: translate(-50%, -50%) scale(0);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -270,7 +270,7 @@
     align-items: center;
     justify-content: space-between;
     margin-top: 16px;
-    border-top: 1px solid rgba(var(--sangar-readflow-accent-rgb), 0.08);
+    border-top: 1px solid rgba(var(--ssrf-accent-rgb), 0.08);
     padding-top: 12px;
     animation: readio-fade-in 0.4s ease forwards;
 }
@@ -281,8 +281,8 @@
     align-items: center;
     justify-content: center;
     background: transparent;
-    border: 1px solid var(--sangar-readflow-border);
-    color: var(--sangar-readflow-text-muted) !important;
+    border: 1px solid var(--ssrf-border);
+    color: var(--ssrf-text-muted) !important;
     border-radius: 8px;
     padding: 6px 12px;
     cursor: pointer;
@@ -293,9 +293,9 @@
 }
 
 .readio-control-btn:hover {
-    color: var(--sangar-readflow-text);
-    border-color: rgba(var(--sangar-readflow-accent-rgb), 0.3);
-    background: rgba(var(--sangar-readflow-accent-rgb), 0.04);
+    color: var(--ssrf-text);
+    border-color: rgba(var(--ssrf-accent-rgb), 0.3);
+    background: rgba(var(--ssrf-accent-rgb), 0.04);
 }
 
 /* Speed Selection Selector dropdown */
@@ -308,7 +308,7 @@
     bottom: calc(100% + 8px);
     left: 0;
     background: #ffffff;
-    border: 1px solid var(--sangar-readflow-border);
+    border: 1px solid var(--ssrf-border);
     border-radius: 8px;
     padding: 4px;
     margin: 0;
@@ -330,7 +330,7 @@
     padding: 6px 12px;
     font-size: 12px;
     font-weight: 500;
-    color: var(--sangar-readflow-text-muted) !important;
+    color: var(--ssrf-text-muted) !important;
     cursor: pointer;
     border-radius: 5px;
     transition: all 0.15s ease;
@@ -338,12 +338,12 @@
 }
 
 .readio-speed-menu li:hover {
-    background: rgba(var(--sangar-readflow-accent-rgb), 0.08);
-    color: var(--sangar-readflow-accent);
+    background: rgba(var(--ssrf-accent-rgb), 0.08);
+    color: var(--ssrf-accent);
 }
 
 .readio-speed-menu li.active {
-    background: var(--sangar-readflow-accent);
+    background: var(--ssrf-accent);
     color: #ffffff;
 }
 
@@ -365,15 +365,15 @@
 .readio-indicator-text {
     font-size: 11px;
     font-weight: 600;
-    color: var(--sangar-readflow-text-muted) !important;
+    color: var(--ssrf-text-muted) !important;
 }
 
 /* Download button */
 .readio-btn-download svg {
-    stroke: var(--sangar-readflow-text-muted) !important;
+    stroke: var(--ssrf-text-muted) !important;
 }
 .readio-btn-download:hover svg {
-    stroke: var(--sangar-readflow-accent);
+    stroke: var(--ssrf-accent);
 }
 
 /* Brutalism Theme Overrides */
@@ -408,7 +408,7 @@
     border: 3px solid #000;
     border-radius: 0;
     box-shadow: 4px 4px 0px 0px #000;
-    background: var(--sangar-readflow-accent);
+    background: var(--ssrf-accent);
     color: #000 !important;
     text-transform: uppercase;
     font-weight: 900;
@@ -439,7 +439,7 @@
 .readio-widget.readio-theme-brutalism .readio-progress-knob {
     border: 3px solid #000;
     border-radius: 0;
-    background: var(--sangar-readflow-accent);
+    background: var(--ssrf-accent);
     width: 16px;
     height: 24px;
 }

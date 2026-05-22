@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sangar Studio ReadFlow
  * Description: Calculates post reading time with a beautiful progress bar and generates high-quality AI audio versions using OpenAI TTS with local caching, plus native browser speech fallback.
- * Version: 1.1.0
+ * Version: 1.2.1
  * Author: Antigravity
  * Text Domain: sangar-studio-readflow
  * Domain Path: /languages
@@ -14,20 +14,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants
-define( 'SANGAR_STUDIO_READFLOW_VERSION', '1.1.0' );
-define( 'SANGAR_STUDIO_READFLOW_PATH', plugin_dir_path( __FILE__ ) );
-define( 'SANGAR_STUDIO_READFLOW_URL', plugin_dir_url( __FILE__ ) );
-define( 'SANGAR_STUDIO_READFLOW_BASENAME', plugin_basename( __FILE__ ) );
+define( 'SSRF_VERSION', '1.2.1' );
+define( 'SSRF_PATH', plugin_dir_path( __FILE__ ) );
+define( 'SSRF_URL', plugin_dir_url( __FILE__ ) );
+define( 'SSRF_BASENAME', plugin_basename( __FILE__ ) );
 
 // Include required files
-require_once SANGAR_STUDIO_READFLOW_PATH . 'includes/class-sangar-studio-readflow-settings.php';
-require_once SANGAR_STUDIO_READFLOW_PATH . 'includes/class-sangar-studio-readflow-tts.php';
-require_once SANGAR_STUDIO_READFLOW_PATH . 'includes/class-sangar-studio-readflow-frontend.php';
+require_once SSRF_PATH . 'includes/class-ssrf-settings.php';
+require_once SSRF_PATH . 'includes/class-ssrf-tts.php';
+require_once SSRF_PATH . 'includes/class-ssrf-frontend.php';
 
 /**
  * Initialize the plugin components
  */
-class Sangar_Studio_ReadFlow {
+class SSRF {
     private static $instance = null;
 
     public static function get_instance() {
@@ -38,30 +38,20 @@ class Sangar_Studio_ReadFlow {
     }
 
     private function __construct() {
-        // Load translations
-        add_action( 'init', [ $this, 'load_textdomain' ] );
-
         // Initialize settings page in admin
         if ( is_admin() ) {
-            new Sangar_Studio_ReadFlow_Settings();
+            new SSRF_Settings();
         }
         
         // Initialize TTS logic (AJAX handlers, API calls, caching)
-        new Sangar_Studio_ReadFlow_TTS();
+        new SSRF_TTS();
 
         // Initialize frontend display & assets enqueueing
-        new Sangar_Studio_ReadFlow_Frontend();
+        new SSRF_Frontend();
 
         // Register activation & deactivation hooks
         register_activation_hook( __FILE__, [ $this, 'activate' ] );
         register_deactivation_hook( __FILE__, [ $this, 'deactivate' ] );
-    }
-
-    /**
-     * Load the plugin text domain for translation.
-     */
-    public function load_textdomain() {
-        load_plugin_textdomain( 'sangar-studio-readflow', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
     }
 
     /**
@@ -70,7 +60,7 @@ class Sangar_Studio_ReadFlow {
     public function activate() {
         // Run any setup needed (e.g. create uploads subfolder for caching MP3s)
         $upload_dir = wp_upload_dir();
-        $readflow_dir = $upload_dir['basedir'] . '/sangar-studio-readflow';
+        $readflow_dir = $upload_dir['basedir'] . '/ssrf';
         if ( ! file_exists( $readflow_dir ) ) {
             wp_mkdir_p( $readflow_dir );
         }
@@ -96,7 +86,7 @@ class Sangar_Studio_ReadFlow {
 }
 
 // Instantiate the plugin
-function sangar_studio_readflow_init() {
-    return Sangar_Studio_ReadFlow::get_instance();
+function ssrf_init() {
+    return SSRF::get_instance();
 }
-sangar_studio_readflow_init();
+ssrf_init();

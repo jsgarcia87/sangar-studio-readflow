@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Sangar_Studio_ReadFlow_Settings {
+class SSRF_Settings {
 
     public function __construct() {
         // Menu creation
@@ -21,10 +21,10 @@ class Sangar_Studio_ReadFlow_Settings {
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_assets' ] );
         
         // AJAX: Clear audio cache
-        add_action( 'wp_ajax_sangar_readflow_clear_cache', [ $this, 'ajax_clear_cache' ] );
+        add_action( 'wp_ajax_ssrf_clear_cache', [ $this, 'ajax_clear_cache' ] );
         
         // AJAX: Test API Connection
-        add_action( 'wp_ajax_sangar_readflow_test_api', [ $this, 'ajax_test_api' ] );
+        add_action( 'wp_ajax_ssrf_test_api', [ $this, 'ajax_test_api' ] );
     }
 
     /**
@@ -35,7 +35,7 @@ class Sangar_Studio_ReadFlow_Settings {
             __( 'Sangar Studio ReadFlow Settings', 'sangar-studio-readflow' ),
             'ReadFlow 🎙️',
             'manage_options',
-            'sangar-readflow-settings',
+            'ssrf-settings',
             [ $this, 'render_settings_page' ]
         );
     }
@@ -44,139 +44,139 @@ class Sangar_Studio_ReadFlow_Settings {
      * Register settings in WordPress.
      */
     public function register_plugin_settings() {
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_api_key', [
+        register_setting( 'ssrf_settings_group', 'ssrf_api_key', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_api_key' ],
             'default'           => '',
         ]);
         
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_voice', [
+        register_setting( 'ssrf_settings_group', 'ssrf_voice', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_voice' ],
             'default'           => 'alloy',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_model', [
+        register_setting( 'ssrf_settings_group', 'ssrf_model', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_model' ],
             'default'           => 'tts-1',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_wpm', [
+        register_setting( 'ssrf_settings_group', 'ssrf_wpm', [
             'type'              => 'integer',
             'sanitize_callback' => 'absint',
             'default'           => 200,
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_position', [
+        register_setting( 'ssrf_settings_group', 'ssrf_position', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_position' ],
             'default'           => 'before',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_accent_color', [
+        register_setting( 'ssrf_settings_group', 'ssrf_accent_color', [
             'type'              => 'string',
             'sanitize_callback' => 'sanitize_hex_color',
             'default'           => '#6366f1',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_enable_ai', [
+        register_setting( 'ssrf_settings_group', 'ssrf_enable_ai', [
             'type'              => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default'           => true,
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_auto_generate', [
+        register_setting( 'ssrf_settings_group', 'ssrf_auto_generate', [
             'type'              => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default'           => false,
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_allow_guest_generation', [
+        register_setting( 'ssrf_settings_group', 'ssrf_allow_guest_generation', [
             'type'              => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default'           => false,
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_show_download', [
+        register_setting( 'ssrf_settings_group', 'ssrf_show_download', [
             'type'              => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default'           => true,
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_theme_style', [
+        register_setting( 'ssrf_settings_group', 'ssrf_theme_style', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_theme_style' ],
             'default'           => 'glass',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_border_radius', [
+        register_setting( 'ssrf_settings_group', 'ssrf_border_radius', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_border_radius' ],
             'default'           => 'rounded',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_use_gradient', [
+        register_setting( 'ssrf_settings_group', 'ssrf_use_gradient', [
             'type'              => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default'           => false,
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_accent_color_2', [
+        register_setting( 'ssrf_settings_group', 'ssrf_accent_color_2', [
             'type'              => 'string',
             'sanitize_callback' => 'sanitize_hex_color',
             'default'           => '#818cf8',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_font_family', [
+        register_setting( 'ssrf_settings_group', 'ssrf_font_family', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_font_family' ],
             'default'           => 'inherit',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_padding_scale', [
+        register_setting( 'ssrf_settings_group', 'ssrf_padding_scale', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_padding_scale' ],
             'default'           => 'default',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_icon_style', [
+        register_setting( 'ssrf_settings_group', 'ssrf_icon_style', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_icon_style' ],
             'default'           => 'emoji',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_text_color', [
+        register_setting( 'ssrf_settings_group', 'ssrf_text_color', [
             'type'              => 'string',
             'sanitize_callback' => 'sanitize_hex_color',
             'default'           => '',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_button_text_color', [
+        register_setting( 'ssrf_settings_group', 'ssrf_button_text_color', [
             'type'              => 'string',
             'sanitize_callback' => 'sanitize_hex_color',
             'default'           => '#ffffff',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_text_muted_color', [
+        register_setting( 'ssrf_settings_group', 'ssrf_text_muted_color', [
             'type'              => 'string',
             'sanitize_callback' => 'sanitize_hex_color',
             'default'           => '',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_wave_bars_count', [
+        register_setting( 'ssrf_settings_group', 'ssrf_wave_bars_count', [
             'type'              => 'integer',
             'sanitize_callback' => 'absint',
             'default'           => 5,
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_wave_bars_style', [
+        register_setting( 'ssrf_settings_group', 'ssrf_wave_bars_style', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_wave_bars_style' ],
             'default'           => 'classic',
         ]);
 
-        register_setting( 'sangar_readflow_settings_group', 'sangar_readflow_wave_bars_animation', [
+        register_setting( 'ssrf_settings_group', 'ssrf_wave_bars_animation', [
             'type'              => 'string',
             'sanitize_callback' => [ $this, 'sanitize_wave_bars_animation' ],
             'default'           => 'energetic',
@@ -189,7 +189,7 @@ class Sangar_Studio_ReadFlow_Settings {
     public function sanitize_api_key( $value ) {
         $value = sanitize_text_field( trim( $value ) );
         if ( 'PROTECTED_KEY_PLACEHOLDER' === $value ) {
-            return get_option( 'sangar_readflow_api_key', '' );
+            return get_option( 'ssrf_api_key', '' );
         }
         return $value;
     }
@@ -288,18 +288,18 @@ class Sangar_Studio_ReadFlow_Settings {
      * Enqueue asset files in Admin dashboard.
      */
     public function enqueue_admin_assets( $hook ) {
-        if ( 'settings_page_sangar-readflow-settings' !== $hook ) {
+        if ( 'settings_page_ssrf-settings' !== $hook ) {
             return;
         }
 
         wp_enqueue_style( 'wp-color-picker' );
-        wp_enqueue_style( 'sangar-readflow-admin-style', SANGAR_STUDIO_READFLOW_URL . 'assets/css/admin.css', [], SANGAR_STUDIO_READFLOW_VERSION );
+        wp_enqueue_style( 'ssrf-admin-style', SSRF_URL . 'assets/css/admin.css', [], SSRF_VERSION );
         
-        wp_enqueue_script( 'sangar-readflow-admin-script', SANGAR_STUDIO_READFLOW_URL . 'assets/js/admin.js', [ 'jquery', 'wp-color-picker' ], SANGAR_STUDIO_READFLOW_VERSION, true );
+        wp_enqueue_script( 'ssrf-admin-script', SSRF_URL . 'assets/js/admin.js', [ 'jquery', 'wp-color-picker' ], SSRF_VERSION, true );
         
-        wp_localize_script( 'sangar-readflow-admin-script', 'sangar_readflow_admin', [
+        wp_localize_script( 'ssrf-admin-script', 'ssrf_admin', [
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'sangar_readflow_admin_nonce' ),
+            'nonce'    => wp_create_nonce( 'ssrf_admin_nonce' ),
             'loading_text' => __( 'Procesando...', 'sangar-studio-readflow' ),
             'test_success' => __( '¡Conexión exitosa! Reproduciendo audio de prueba...', 'sangar-studio-readflow' ),
             'test_fail' => __( 'Error en la conexión. Revisa tu API Key y saldo.', 'sangar-studio-readflow' )
@@ -315,29 +315,29 @@ class Sangar_Studio_ReadFlow_Settings {
         }
 
         // Get saved settings or defaults
-        $api_key                = get_option( 'sangar_readflow_api_key', '' );
-        $voice                  = get_option( 'sangar_readflow_voice', 'alloy' );
-        $model                  = get_option( 'sangar_readflow_model', 'tts-1' );
-        $wpm                    = get_option( 'sangar_readflow_wpm', 200 );
-        $position               = get_option( 'sangar_readflow_position', 'before' );
-        $accent_color           = get_option( 'sangar_readflow_accent_color', '#6366f1' );
-        $accent_color_2         = get_option( 'sangar_readflow_accent_color_2', '#818cf8' );
-        $use_gradient           = get_option( 'sangar_readflow_use_gradient', false );
-        $theme_style            = get_option( 'sangar_readflow_theme_style', 'glass' );
-        $border_radius          = get_option( 'sangar_readflow_border_radius', 'rounded' );
-        $font_family            = get_option( 'sangar_readflow_font_family', 'inherit' );
-        $padding_scale          = get_option( 'sangar_readflow_padding_scale', 'default' );
-        $icon_style             = get_option( 'sangar_readflow_icon_style', 'emoji' );
-        $text_color             = get_option( 'sangar_readflow_text_color', '' );
-        $text_muted_color       = get_option( 'sangar_readflow_text_muted_color', '' );
-        $button_text_color      = get_option( 'sangar_readflow_button_text_color', '#ffffff' );
-        $enable_ai              = get_option( 'sangar_readflow_enable_ai', true );
-        $auto_generate          = get_option( 'sangar_readflow_auto_generate', false );
-        $allow_guest_generation = get_option( 'sangar_readflow_allow_guest_generation', false );
-        $show_download          = get_option( 'sangar_readflow_show_download', true );
-        $wave_bars_count        = get_option( 'sangar_readflow_wave_bars_count', 5 );
-        $wave_bars_style        = get_option( 'sangar_readflow_wave_bars_style', 'classic' );
-        $wave_bars_animation    = get_option( 'sangar_readflow_wave_bars_animation', 'energetic' );
+        $api_key                = get_option( 'ssrf_api_key', '' );
+        $voice                  = get_option( 'ssrf_voice', 'alloy' );
+        $model                  = get_option( 'ssrf_model', 'tts-1' );
+        $wpm                    = get_option( 'ssrf_wpm', 200 );
+        $position               = get_option( 'ssrf_position', 'before' );
+        $accent_color           = get_option( 'ssrf_accent_color', '#6366f1' );
+        $accent_color_2         = get_option( 'ssrf_accent_color_2', '#818cf8' );
+        $use_gradient           = get_option( 'ssrf_use_gradient', false );
+        $theme_style            = get_option( 'ssrf_theme_style', 'glass' );
+        $border_radius          = get_option( 'ssrf_border_radius', 'rounded' );
+        $font_family            = get_option( 'ssrf_font_family', 'inherit' );
+        $padding_scale          = get_option( 'ssrf_padding_scale', 'default' );
+        $icon_style             = get_option( 'ssrf_icon_style', 'emoji' );
+        $text_color             = get_option( 'ssrf_text_color', '' );
+        $text_muted_color       = get_option( 'ssrf_text_muted_color', '' );
+        $button_text_color      = get_option( 'ssrf_button_text_color', '#ffffff' );
+        $enable_ai              = get_option( 'ssrf_enable_ai', true );
+        $auto_generate          = get_option( 'ssrf_auto_generate', false );
+        $allow_guest_generation = get_option( 'ssrf_allow_guest_generation', false );
+        $show_download          = get_option( 'ssrf_show_download', true );
+        $wave_bars_count        = get_option( 'ssrf_wave_bars_count', 5 );
+        $wave_bars_style        = get_option( 'ssrf_wave_bars_style', 'classic' );
+        $wave_bars_animation    = get_option( 'ssrf_wave_bars_animation', 'energetic' );
 
         // Mask API Key for display if set
         $masked_key = '';
@@ -355,14 +355,14 @@ class Sangar_Studio_ReadFlow_Settings {
                     </div>
                 </div>
                 <div class="readio-version-tag">
-                    v<?php echo esc_html( SANGAR_STUDIO_READFLOW_VERSION ); ?>
+                    v<?php echo esc_html( SSRF_VERSION ); ?>
                 </div>
             </header>
 
             <div class="readio-container">
                 <main class="readio-main-content">
                     <form method="post" action="options.php" class="readio-settings-form">
-                        <?php settings_fields( 'sangar_readflow_settings_group' ); ?>
+                        <?php settings_fields( 'ssrf_settings_group' ); ?>
                         
                         <!-- TAB CARD 1: API SETTINGS -->
                         <div class="readio-card">
@@ -377,7 +377,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                     </label>
                                     <div class="readio-input-wrap">
                                         <label class="readio-switch">
-                                            <input type="checkbox" name="sangar_readflow_enable_ai" id="readio_enable_ai" value="1" <?php checked( $enable_ai, true ); ?>>
+                                            <input type="checkbox" name="ssrf_enable_ai" id="readio_enable_ai" value="1" <?php checked( $enable_ai, true ); ?>>
                                             <span class="readio-slider"></span>
                                         </label>
                                         <p class="description"><?php esc_html_e( 'Si está desactivado, el plugin usará automáticamente la voz nativa del navegador (gratuita) sin realizar llamadas API.', 'sangar-studio-readflow' ); ?></p>
@@ -392,7 +392,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <div class="readio-input-wrap">
                                             <div class="readio-api-input-container">
                                                 <input type="password" 
-                                                       name="sangar_readflow_api_key" 
+                                                       name="ssrf_api_key" 
                                                        id="readio_api_key_input" 
                                                        value="<?php echo ! empty( $api_key ) ? 'PROTECTED_KEY_PLACEHOLDER' : ''; ?>" 
                                                        placeholder="<?php echo ! empty( $masked_key ) ? esc_attr( $masked_key ) : 'sk-...'; ?>"
@@ -403,6 +403,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                                 <?php 
                                                 echo wp_kses(
                                                     sprintf( 
+                                                        /* translators: %s: Link to OpenAI API keys console */
                                                         esc_html__( 'Inserta tu API key de OpenAI. Puedes obtener una en tu %s.', 'sangar-studio-readflow' ), 
                                                         '<a href="' . esc_url( 'https://platform.openai.com/api-keys' ) . '" target="_blank">' . esc_html__( 'Consola de OpenAI', 'sangar-studio-readflow' ) . '</a>' 
                                                     ),
@@ -423,7 +424,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                             <?php esc_html_e( 'Voz predeterminada de IA', 'sangar-studio-readflow' ); ?>
                                         </label>
                                         <div class="readio-input-wrap">
-                                            <select name="sangar_readflow_voice" id="readio_voice" class="readio-select">
+                                            <select name="ssrf_voice" id="readio_voice" class="readio-select">
                                                 <option value="alloy" <?php selected( $voice, 'alloy' ); ?>>Alloy (<?php esc_html_e( 'Voz balanceada / Neutra', 'sangar-studio-readflow' ); ?>)</option>
                                                 <option value="echo" <?php selected( $voice, 'echo' ); ?>>Echo (<?php esc_html_e( 'Voz cálida / Masculina', 'sangar-studio-readflow' ); ?>)</option>
                                                 <option value="fable" <?php selected( $voice, 'fable' ); ?>>Fable (<?php esc_html_e( 'Voz expresiva / Dramática', 'sangar-studio-readflow' ); ?>)</option>
@@ -440,7 +441,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                             <?php esc_html_e( 'Modelo TTS de OpenAI', 'sangar-studio-readflow' ); ?>
                                         </label>
                                         <div class="readio-input-wrap">
-                                            <select name="sangar_readflow_model" id="readio_model" class="readio-select">
+                                            <select name="ssrf_model" id="readio_model" class="readio-select">
                                                 <option value="tts-1" <?php selected( $model, 'tts-1' ); ?>>tts-1 (<?php esc_html_e( 'Rápido y de baja latencia - Recomendado', 'sangar-studio-readflow' ); ?>)</option>
                                                 <option value="tts-1-hd" <?php selected( $model, 'tts-1-hd' ); ?>>tts-1-hd (<?php esc_html_e( 'Alta definición - Calidad superior pero mayor coste', 'sangar-studio-readflow' ); ?>)</option>
                                             </select>
@@ -453,7 +454,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         </label>
                                         <div class="readio-input-wrap">
                                             <label class="readio-switch">
-                                                <input type="checkbox" name="sangar_readflow_auto_generate" id="readio_auto_generate" value="1" <?php checked( $auto_generate, true ); ?>>
+                                                <input type="checkbox" name="ssrf_auto_generate" id="readio_auto_generate" value="1" <?php checked( $auto_generate, true ); ?>>
                                                 <span class="readio-slider"></span>
                                             </label>
                                             <p class="description"><?php esc_html_e( 'Generar automáticamente el archivo MP3 del post al guardarlo o publicarlo. Esto evita tiempos de espera para el primer lector de la entrada.', 'sangar-studio-readflow' ); ?></p>
@@ -466,7 +467,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         </label>
                                         <div class="readio-input-wrap">
                                             <label class="readio-switch">
-                                                <input type="checkbox" name="sangar_readflow_allow_guest_generation" id="readio_allow_guest_generation" value="1" <?php checked( $allow_guest_generation, true ); ?>>
+                                                <input type="checkbox" name="ssrf_allow_guest_generation" id="readio_allow_guest_generation" value="1" <?php checked( $allow_guest_generation, true ); ?>>
                                                 <span class="readio-slider"></span>
                                             </label>
                                             <p class="description"><?php esc_html_e( 'Permitir a los usuarios invitados (no autenticados) desencadenar la generación de audio con OpenAI si este no está pregenerado. Desmarcar para proteger tu cuota mensual contra abuso o bots.', 'sangar-studio-readflow' ); ?></p>
@@ -489,7 +490,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                     </label>
                                     <div class="readio-input-wrap">
                                         <div class="readio-range-container">
-                                            <input type="range" name="sangar_readflow_wpm" id="readio_wpm" min="100" max="400" step="10" value="<?php echo esc_attr( $wpm ); ?>" class="readio-range">
+                                            <input type="range" name="ssrf_wpm" id="readio_wpm" min="100" max="400" step="10" value="<?php echo esc_attr( $wpm ); ?>" class="readio-range">
                                             <span id="readio_wpm_val" class="readio-badge"><?php echo esc_html( $wpm ); ?> PPM</span>
                                         </div>
                                         <p class="description"><?php esc_html_e( 'El promedio de lectura humana es de 200 PPM para textos estándar y 250 PPM para lectura rápida.', 'sangar-studio-readflow' ); ?></p>
@@ -501,7 +502,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Ubicación en el Post', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <select name="sangar_readflow_position" id="readio_position" class="readio-select">
+                                        <select name="ssrf_position" id="readio_position" class="readio-select">
                                             <option value="before" <?php selected( $position, 'before' ); ?>><?php esc_html_e( 'Antes del contenido (Recomendado)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="after" <?php selected( $position, 'after' ); ?>><?php esc_html_e( 'Después del contenido', 'sangar-studio-readflow' ); ?></option>
                                             <option value="both" <?php selected( $position, 'both' ); ?>><?php esc_html_e( 'Antes y después del contenido', 'sangar-studio-readflow' ); ?></option>
@@ -511,7 +512,8 @@ class Sangar_Studio_ReadFlow_Settings {
                                             <?php 
                                             echo wp_kses(
                                                 sprintf( 
-                                                    esc_html__( 'Si eliges "Insertar manualmente", puedes pegar el shortcode %s o llamar a %s en tus plantillas.', 'sangar-studio-readflow' ), 
+                                                    /* translators: 1: shortcode markup, 2: PHP template function call markup */
+                                                    esc_html__( 'Si eliges "Insertar manualmente", puedes pegar el shortcode %1$s o llamar a %2$s en tus plantillas.', 'sangar-studio-readflow' ), 
                                                     '<code>[readio]</code>', 
                                                     '<code>echo do_shortcode(\'[readio]\');</code>' 
                                                 ),
@@ -529,7 +531,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Estilo del Tema', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <select name="sangar_readflow_theme_style" id="readio_theme_style" class="readio-select">
+                                        <select name="ssrf_theme_style" id="readio_theme_style" class="readio-select">
                                             <option value="glass" <?php selected( $theme_style, 'glass' ); ?>><?php esc_html_e( 'Glassmorphism (Vidrio translúcido) - Recomendado', 'sangar-studio-readflow' ); ?></option>
                                             <option value="light" <?php selected( $theme_style, 'light' ); ?>><?php esc_html_e( 'Light Mode (Modo claro limpio)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="dark" <?php selected( $theme_style, 'dark' ); ?>><?php esc_html_e( 'Dark Mode (Sleek nocturno)', 'sangar-studio-readflow' ); ?></option>
@@ -545,7 +547,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Estilo de Iconos', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <select name="sangar_readflow_icon_style" id="readio_icon_style" class="readio-select">
+                                        <select name="ssrf_icon_style" id="readio_icon_style" class="readio-select">
                                             <option value="emoji" <?php selected( $icon_style, 'emoji' ); ?>><?php esc_html_e( 'Emojis (Nativo)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="fontawesome" <?php selected( $icon_style, 'fontawesome' ); ?>><?php esc_html_e( 'FontAwesome', 'sangar-studio-readflow' ); ?></option>
                                             <option value="material" <?php selected( $icon_style, 'material' ); ?>><?php esc_html_e( 'Material Icons', 'sangar-studio-readflow' ); ?></option>
@@ -560,7 +562,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Estilo de Esquinas', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <select name="sangar_readflow_border_radius" id="readio_border_radius" class="readio-select">
+                                        <select name="ssrf_border_radius" id="readio_border_radius" class="readio-select">
                                             <option value="sharp" <?php selected( $border_radius, 'sharp' ); ?>><?php esc_html_e( 'Sharp (Esquinas cuadradas retro)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="rounded" <?php selected( $border_radius, 'rounded' ); ?>><?php esc_html_e( 'Rounded (Esquinas suaves redondeadas)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="pill" <?php selected( $border_radius, 'pill' ); ?>><?php esc_html_e( 'Pill (Forma de píldora moderna)', 'sangar-studio-readflow' ); ?></option>
@@ -574,7 +576,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Cantidad de Barras de Sonido', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <select name="sangar_readflow_wave_bars_count" id="readio_wave_bars_count" class="readio-select">
+                                        <select name="ssrf_wave_bars_count" id="readio_wave_bars_count" class="readio-select">
                                             <option value="5" <?php selected( $wave_bars_count, 5 ); ?>>5 <?php esc_html_e( 'barras (Clásico compacto)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="8" <?php selected( $wave_bars_count, 8 ); ?>>8 <?php esc_html_e( 'barras (Equilibrado)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="12" <?php selected( $wave_bars_count, 12 ); ?>>12 <?php esc_html_e( 'barras (Elegante)', 'sangar-studio-readflow' ); ?></option>
@@ -590,7 +592,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Estilo Visual del Ecualizador', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <select name="sangar_readflow_wave_bars_style" id="readio_wave_bars_style" class="readio-select">
+                                        <select name="ssrf_wave_bars_style" id="readio_wave_bars_style" class="readio-select">
                                             <option value="classic" <?php selected( $wave_bars_style, 'classic' ); ?>><?php esc_html_e( 'Líneas clásicas (crece desde abajo)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="symmetric" <?php selected( $wave_bars_style, 'symmetric' ); ?>><?php esc_html_e( 'Onda simétrica (onda real desde el centro)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="rounded" <?php selected( $wave_bars_style, 'rounded' ); ?>><?php esc_html_e( 'Píldoras redondeadas', 'sangar-studio-readflow' ); ?></option>
@@ -605,7 +607,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Animación del Visualizador', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <select name="sangar_readflow_wave_bars_animation" id="readio_wave_bars_animation" class="readio-select">
+                                        <select name="ssrf_wave_bars_animation" id="readio_wave_bars_animation" class="readio-select">
                                             <option value="energetic" <?php selected( $wave_bars_animation, 'energetic' ); ?>><?php esc_html_e( 'Enérgica (Rápida y dinámica)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="chill" <?php selected( $wave_bars_animation, 'chill' ); ?>><?php esc_html_e( 'Relajada (Suave y cadenciosa)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="none" <?php selected( $wave_bars_animation, 'none' ); ?>><?php esc_html_e( 'Estática (Sin animación, sólo indicador visual)', 'sangar-studio-readflow' ); ?></option>
@@ -619,7 +621,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Tipografía del Reproductor', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <select name="sangar_readflow_font_family" id="readio_font_family" class="readio-select">
+                                        <select name="ssrf_font_family" id="readio_font_family" class="readio-select">
                                             <option value="inherit" <?php selected( $font_family, 'inherit' ); ?>><?php esc_html_e( 'Heredada (Usar tipografía de tu tema)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="inter" <?php selected( $font_family, 'inter' ); ?>>Inter (<?php esc_html_e( 'Moderna sans-serif premium', 'sangar-studio-readflow' ); ?>)</option>
                                             <option value="playfair" <?php selected( $font_family, 'playfair' ); ?>>Playfair Display (<?php esc_html_e( 'Elegante serif clásica', 'sangar-studio-readflow' ); ?>)</option>
@@ -634,7 +636,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Tamaño del Widget', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <select name="sangar_readflow_padding_scale" id="readio_padding_scale" class="readio-select">
+                                        <select name="ssrf_padding_scale" id="readio_padding_scale" class="readio-select">
                                             <option value="compact" <?php selected( $padding_scale, 'compact' ); ?>><?php esc_html_e( 'Compacto (Márgenes ajustados)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="default" <?php selected( $padding_scale, 'default' ); ?>><?php esc_html_e( 'Predeterminado (Equilibrado)', 'sangar-studio-readflow' ); ?></option>
                                             <option value="spacious" <?php selected( $padding_scale, 'spacious' ); ?>><?php esc_html_e( 'Espacioso (Padding amplio y elegante)', 'sangar-studio-readflow' ); ?></option>
@@ -648,7 +650,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Color de acento primario', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <input type="text" name="sangar_readflow_accent_color" id="readio_accent_color" value="<?php echo esc_attr( $accent_color ); ?>" class="readio-color-field" data-default-color="#6366f1">
+                                        <input type="text" name="ssrf_accent_color" id="readio_accent_color" value="<?php echo esc_attr( $accent_color ); ?>" class="readio-color-field" data-default-color="#6366f1">
                                         <p class="description"><?php esc_html_e( 'Define el color de los botones del reproductor, barras de progreso y elementos interactivos primarios.', 'sangar-studio-readflow' ); ?></p>
                                     </div>
                                 </div>
@@ -658,7 +660,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Color del Texto (Opcional)', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <input type="text" name="sangar_readflow_text_color" id="readio_text_color" value="<?php echo esc_attr( $text_color ); ?>" class="readio-color-field" data-default-color="">
+                                        <input type="text" name="ssrf_text_color" id="readio_text_color" value="<?php echo esc_attr( $text_color ); ?>" class="readio-color-field" data-default-color="">
                                         <p class="description"><?php esc_html_e( 'Sobrescribe el color del texto principal del widget. Déjalo en blanco para usar el color por defecto del tema.', 'sangar-studio-readflow' ); ?></p>
                                     </div>
                                 </div>
@@ -668,7 +670,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Color del Texto Secundario', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <input type="text" name="sangar_readflow_text_muted_color" id="readio_text_muted_color" value="<?php echo esc_attr( $text_muted_color ); ?>" class="readio-color-field" data-default-color="">
+                                        <input type="text" name="ssrf_text_muted_color" id="readio_text_muted_color" value="<?php echo esc_attr( $text_muted_color ); ?>" class="readio-color-field" data-default-color="">
                                         <p class="description"><?php esc_html_e( 'Color de textos secundarios como la velocidad, indicadores y tiempo. Déjalo en blanco para usar el color por defecto.', 'sangar-studio-readflow' ); ?></p>
                                     </div>
                                 </div>
@@ -678,7 +680,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Color del Texto del Botón', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <input type="text" name="sangar_readflow_button_text_color" id="readio_button_text_color" value="<?php echo esc_attr( $button_text_color ); ?>" class="readio-color-field" data-default-color="#ffffff">
+                                        <input type="text" name="ssrf_button_text_color" id="readio_button_text_color" value="<?php echo esc_attr( $button_text_color ); ?>" class="readio-color-field" data-default-color="#ffffff">
                                         <p class="description"><?php esc_html_e( 'Color de la fuente dentro del botón de reproducción principal.', 'sangar-studio-readflow' ); ?></p>
                                     </div>
                                 </div>
@@ -689,7 +691,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                     </label>
                                     <div class="readio-input-wrap">
                                         <label class="readio-switch">
-                                            <input type="checkbox" name="sangar_readflow_use_gradient" id="readio_use_gradient" value="1" <?php checked( $use_gradient, true ); ?>>
+                                            <input type="checkbox" name="ssrf_use_gradient" id="readio_use_gradient" value="1" <?php checked( $use_gradient, true ); ?>>
                                             <span class="readio-slider"></span>
                                         </label>
                                         <p class="description"><?php esc_html_e( 'Genera un degradado premium de dos colores en los elementos destacados del reproductor visual.', 'sangar-studio-readflow' ); ?></p>
@@ -701,7 +703,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                         <?php esc_html_e( 'Color de acento secundario', 'sangar-studio-readflow' ); ?>
                                     </label>
                                     <div class="readio-input-wrap">
-                                        <input type="text" name="sangar_readflow_accent_color_2" id="readio_accent_color_2" value="<?php echo esc_attr( $accent_color_2 ); ?>" class="readio-color-field" data-default-color="#818cf8">
+                                        <input type="text" name="ssrf_accent_color_2" id="readio_accent_color_2" value="<?php echo esc_attr( $accent_color_2 ); ?>" class="readio-color-field" data-default-color="#818cf8">
                                         <p class="description"><?php esc_html_e( 'Selecciona el segundo color para crear la transición lineal del degradado.', 'sangar-studio-readflow' ); ?></p>
                                     </div>
                                 </div>
@@ -712,7 +714,7 @@ class Sangar_Studio_ReadFlow_Settings {
                                     </label>
                                     <div class="readio-input-wrap">
                                         <label class="readio-switch">
-                                            <input type="checkbox" name="sangar_readflow_show_download" id="readio_show_download" value="1" <?php checked( $show_download, true ); ?>>
+                                            <input type="checkbox" name="ssrf_show_download" id="readio_show_download" value="1" <?php checked( $show_download, true ); ?>>
                                             <span class="readio-slider"></span>
                                         </label>
                                         <p class="description"><?php esc_html_e( 'Muestra un enlace discreto de descarga en el reproductor personalizado (solo disponible para voz IA).', 'sangar-studio-readflow' ); ?></p>
@@ -784,7 +786,7 @@ class Sangar_Studio_ReadFlow_Settings {
      */
     public static function get_cached_audios_count() {
         $upload_dir = wp_upload_dir();
-        $readflow_dir = $upload_dir['basedir'] . '/sangar-studio-readflow';
+        $readflow_dir = $upload_dir['basedir'] . '/ssrf';
         if ( ! file_exists( $readflow_dir ) ) {
             return 0;
         }
@@ -798,7 +800,7 @@ class Sangar_Studio_ReadFlow_Settings {
      */
     public static function get_cached_audios_size() {
         $upload_dir = wp_upload_dir();
-        $readflow_dir = $upload_dir['basedir'] . '/sangar-studio-readflow';
+        $readflow_dir = $upload_dir['basedir'] . '/ssrf';
         if ( ! file_exists( $readflow_dir ) ) {
             return '0 B';
         }
@@ -829,14 +831,14 @@ class Sangar_Studio_ReadFlow_Settings {
      * AJAX Action: Clear cached audio files.
      */
     public function ajax_clear_cache() {
-        check_ajax_referer( 'sangar_readflow_admin_nonce', 'nonce' );
+        check_ajax_referer( 'ssrf_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error( __( 'Permisos insuficientes.', 'sangar-studio-readflow' ) );
         }
 
         $upload_dir = wp_upload_dir();
-        $readflow_dir = $upload_dir['basedir'] . '/sangar-studio-readflow';
+        $readflow_dir = $upload_dir['basedir'] . '/ssrf';
         
         if ( file_exists( $readflow_dir ) ) {
             $files = glob( $readflow_dir . '/*.mp3' );
@@ -858,7 +860,7 @@ class Sangar_Studio_ReadFlow_Settings {
      * AJAX Action: Test connection with OpenAI API.
      */
     public function ajax_test_api() {
-        check_ajax_referer( 'sangar_readflow_admin_nonce', 'nonce' );
+        check_ajax_referer( 'ssrf_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error( __( 'Permisos insuficientes.', 'sangar-studio-readflow' ) );
@@ -870,7 +872,7 @@ class Sangar_Studio_ReadFlow_Settings {
         $model   = isset( $_POST['model'] ) ? sanitize_text_field( wp_unslash( $_POST['model'] ) ) : 'tts-1';
 
         if ( 'PROTECTED_KEY_PLACEHOLDER' === $api_key ) {
-            $api_key = get_option( 'sangar_readflow_api_key', '' );
+            $api_key = get_option( 'ssrf_api_key', '' );
         }
 
         if ( empty( $api_key ) ) {
@@ -878,7 +880,7 @@ class Sangar_Studio_ReadFlow_Settings {
         }
 
         // Call the TTS API wrapper synchronously
-        $tts_handler = new Sangar_Studio_ReadFlow_TTS();
+        $tts_handler = new SSRF_TTS();
         $audio_data = $tts_handler->fetch_openai_tts( $text, $api_key, $voice, $model );
 
         if ( is_wp_error( $audio_data ) ) {

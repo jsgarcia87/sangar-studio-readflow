@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const audioPlayer     = document.getElementById('readio-html5-audio');
 
     // State Variables
-    let isAiMode          = sangar_readflow_obj.has_ai === '1' || sangar_readflow_obj.has_ai === true;
+    let isAiMode          = ssrf_obj.has_ai === '1' || ssrf_obj.has_ai === true;
     let isSpeechActive    = false; // For native synthesis
     let currentUtterance  = null;
     let playbackSpeed     = 1.0;
@@ -122,15 +122,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Initialize AJAX compilation
         showButtonState('loading');
-        playLabel.innerText = sangar_readflow_obj.text.generating;
+        playLabel.innerText = ssrf_obj.text.generating;
         playBtn.disabled = true;
 
         const formData = new FormData();
-        formData.append('action', 'sangar_readflow_get_audio');
+        formData.append('action', 'ssrf_get_audio');
         formData.append('post_id', postId);
-        formData.append('nonce', sangar_readflow_obj.nonce);
+        formData.append('nonce', ssrf_obj.nonce);
 
-        fetch(sangar_readflow_obj.ajax_url, {
+        fetch(ssrf_obj.ajax_url, {
             method: 'POST',
             body: formData
         })
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     downloadBtn.href = url;
                 }
 
-                playLabel.innerText = sangar_readflow_obj.text.playing_ai;
+                playLabel.innerText = ssrf_obj.text.playing_ai;
                 audioLoaded = true;
 
                 // Auto-start play
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     .catch(e => {
                         console.warn("Auto-play block prevent:", e);
                         showButtonState('play');
-                        playLabel.innerText = sangar_readflow_obj.text.play;
+                        playLabel.innerText = ssrf_obj.text.play;
                     });
             } else {
                 console.error("OpenAI failed, falling back:", data.data);
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function triggerFallback() {
         isAiMode = false;
-        modeLabel.innerText = sangar_readflow_obj.text.playing_nat;
+        modeLabel.innerText = ssrf_obj.text.playing_nat;
         const iconDot = footerControls.querySelector('.readio-indicator-dot');
         if (iconDot) iconDot.style.background = '#eab308'; // Amber for fallback
         
@@ -195,19 +195,19 @@ document.addEventListener('DOMContentLoaded', function() {
     audioPlayer.addEventListener('play', function() {
         showButtonState('pause');
         waveAnim.classList.add('playing');
-        playLabel.innerText = sangar_readflow_obj.text.playing_ai;
+        playLabel.innerText = ssrf_obj.text.playing_ai;
     });
 
     audioPlayer.addEventListener('pause', function() {
         showButtonState('play');
         waveAnim.classList.remove('playing');
-        playLabel.innerText = sangar_readflow_obj.text.play;
+        playLabel.innerText = ssrf_obj.text.play;
     });
 
     audioPlayer.addEventListener('ended', function() {
         showButtonState('play');
         waveAnim.classList.remove('playing');
-        playLabel.innerText = sangar_readflow_obj.text.play;
+        playLabel.innerText = ssrf_obj.text.play;
         updateProgressUI(0);
         currentTimeText.innerText = '0:00';
     });
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
     audioPlayer.addEventListener('error', function() {
         showButtonState('play');
         waveAnim.classList.remove('playing');
-        playLabel.innerText = sangar_readflow_obj.text.error;
+        playLabel.innerText = ssrf_obj.text.error;
     });
 
     // -------------------------------------------------------------
@@ -231,12 +231,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         isSpeechActive = true;
                         showButtonState('pause');
                         waveAnim.classList.add('playing');
-                        playLabel.innerText = sangar_readflow_obj.text.playing_nat;
+                        playLabel.innerText = ssrf_obj.text.playing_nat;
                     } else {
                         window.speechSynthesis.pause();
                         showButtonState('play');
                         waveAnim.classList.remove('playing');
-                        playLabel.innerText = sangar_readflow_obj.text.play;
+                        playLabel.innerText = ssrf_obj.text.play;
                     }
                 }
                 return;
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
             currentUtterance = new SpeechSynthesisUtterance(contentText);
             
             // Detect Page / WP locale
-            let localeCode = sangar_readflow_obj.locale || document.documentElement.lang || 'es-ES';
+            let localeCode = ssrf_obj.locale || document.documentElement.lang || 'es-ES';
             // standard sanitization for synthesis format (usually language code hyphen country code)
             localeCode = localeCode.replace('_', '-');
             currentUtterance.lang = localeCode;
@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 isSpeechActive = true;
                 showButtonState('pause');
                 waveAnim.classList.add('playing');
-                playLabel.innerText = sangar_readflow_obj.text.playing_nat;
+                playLabel.innerText = ssrf_obj.text.playing_nat;
                 footerControls.style.display = 'flex';
             };
 
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 isSpeechActive = false;
                 showButtonState('play');
                 waveAnim.classList.remove('playing');
-                playLabel.innerText = sangar_readflow_obj.text.play;
+                playLabel.innerText = ssrf_obj.text.play;
             };
 
             currentUtterance.onerror = function(event) {
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 isSpeechActive = false;
                 showButtonState('play');
                 waveAnim.classList.remove('playing');
-                playLabel.innerText = sangar_readflow_obj.text.play;
+                playLabel.innerText = ssrf_obj.text.play;
             };
 
             window.speechSynthesis.speak(currentUtterance);

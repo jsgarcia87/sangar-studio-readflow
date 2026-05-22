@@ -9,84 +9,85 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit;
 }
 
-// 1. Delete all registered options from the database
-$options = [
-    'sangar_readflow_api_key',
-    'sangar_readflow_voice',
-    'sangar_readflow_model',
-    'sangar_readflow_wpm',
-    'sangar_readflow_position',
-    'sangar_readflow_accent_color',
-    'sangar_readflow_enable_ai',
-    'sangar_readflow_auto_generate',
-    'sangar_readflow_allow_guest_generation',
-    'sangar_readflow_show_download',
-    'sangar_readflow_theme_style',
-    'sangar_readflow_border_radius',
-    'sangar_readflow_use_gradient',
-    'sangar_readflow_accent_color_2',
-    'sangar_readflow_font_family',
-    'sangar_readflow_padding_scale',
-    'sangar_readflow_icon_style',
-    'sangar_readflow_text_color',
-    'sangar_readflow_button_text_color',
-    'sangar_readflow_text_muted_color',
-    'sangar_readflow_wave_bars_count',
-    'sangar_readflow_wave_bars_style',
-    'sangar_readflow_wave_bars_animation',
-    // Legacy options just in case they were migrated
-    'readio_api_key',
-    'readio_voice',
-    'readio_model',
-    'readio_wpm',
-    'readio_position',
-    'readio_accent_color',
-    'readio_enable_ai',
-    'readio_auto_generate',
-    'readio_allow_guest_generation',
-    'readio_show_download',
-    'readio_theme_style',
-    'readio_border_radius',
-    'readio_use_gradient',
-    'readio_accent_color_2',
-    'readio_font_family',
-    'readio_padding_scale',
-    'readio_icon_style',
-    'readio_text_color',
-    'readio_button_text_color',
-    'readio_text_muted_color',
-    'readio_wave_bars_count',
-    'readio_wave_bars_style',
-    'readio_wave_bars_animation',
-];
+/**
+ * Perform all cleanup actions upon plugin uninstall.
+ */
+function ssrf_uninstall_plugin() {
+    // 1. Delete all registered options from the database
+    $options = [
+        'ssrf_api_key',
+        'ssrf_voice',
+        'ssrf_model',
+        'ssrf_wpm',
+        'ssrf_position',
+        'ssrf_accent_color',
+        'ssrf_enable_ai',
+        'ssrf_auto_generate',
+        'ssrf_allow_guest_generation',
+        'ssrf_show_download',
+        'ssrf_theme_style',
+        'ssrf_border_radius',
+        'ssrf_use_gradient',
+        'ssrf_accent_color_2',
+        'ssrf_font_family',
+        'ssrf_padding_scale',
+        'ssrf_icon_style',
+        'ssrf_text_color',
+        'ssrf_button_text_color',
+        'ssrf_text_muted_color',
+        'ssrf_wave_bars_count',
+        'ssrf_wave_bars_style',
+        'ssrf_wave_bars_animation',
+        // Legacy options just in case they were migrated
+        'readio_api_key',
+        'readio_voice',
+        'readio_model',
+        'readio_wpm',
+        'readio_position',
+        'readio_accent_color',
+        'readio_enable_ai',
+        'readio_auto_generate',
+        'readio_allow_guest_generation',
+        'readio_show_download',
+        'readio_theme_style',
+        'readio_border_radius',
+        'readio_use_gradient',
+        'readio_accent_color_2',
+        'readio_font_family',
+        'readio_padding_scale',
+        'readio_icon_style',
+        'readio_text_color',
+        'readio_button_text_color',
+        'readio_text_muted_color',
+        'readio_wave_bars_count',
+        'readio_wave_bars_style',
+        'readio_wave_bars_animation',
+    ];
 
-foreach ( $options as $option ) {
-    delete_option( $option );
-}
+    foreach ( $options as $option ) {
+        delete_option( $option );
+    }
 
-// 2. Clean up cached audio files inside wp-content/uploads/
-$upload_dir = wp_upload_dir();
+    // 2. Clean up cached audio files inside wp-content/uploads/
+    $upload_dir = wp_upload_dir();
+    $readflow_dir = $upload_dir['basedir'] . '/ssrf';
+    $legacy_dir   = $upload_dir['basedir'] . '/readio';
 
-// Clean up new folder
-$readflow_dir = $upload_dir['basedir'] . '/sangar-studio-readflow';
-if ( file_exists( $readflow_dir ) ) {
-    $files = glob( $readflow_dir . '/*' );
-    foreach ( $files as $file ) {
-        if ( is_file( $file ) ) {
-            @unlink( $file );
+    // Initialize WP_Filesystem to delete directories safely without raw PHP calls
+    global $wp_filesystem;
+    if ( empty( $wp_filesystem ) ) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        WP_Filesystem();
+    }
+
+    if ( ! empty( $wp_filesystem ) ) {
+        if ( $wp_filesystem->exists( $readflow_dir ) ) {
+            $wp_filesystem->delete( $readflow_dir, true );
+        }
+        if ( $wp_filesystem->exists( $legacy_dir ) ) {
+            $wp_filesystem->delete( $legacy_dir, true );
         }
     }
-    @rmdir( $readflow_dir );
 }
 
-// Clean up legacy folder just in case
-$legacy_dir = $upload_dir['basedir'] . '/readio';
-if ( file_exists( $legacy_dir ) ) {
-    $files = glob( $legacy_dir . '/*' );
-    foreach ( $files as $file ) {
-        if ( is_file( $file ) ) {
-            @unlink( $file );
-        }
-    }
-    @rmdir( $legacy_dir );
-}
+ssrf_uninstall_plugin();

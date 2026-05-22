@@ -107,17 +107,17 @@ jQuery(document).ready(function($) {
             }
 
             // Display loading transition status
-            testerStatus.removeClass('success error').addClass('loading').text(sangar_readflow_admin.loading_text);
+            testerStatus.removeClass('success error').addClass('loading').text(ssrf_admin.loading_text);
             testerAudioWrap.hide();
             testApiBtn.prop('disabled', true);
 
             // POST query
             $.ajax({
-                url: sangar_readflow_admin.ajax_url,
+                url: ssrf_admin.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'sangar_readflow_test_api',
-                    nonce: sangar_readflow_admin.nonce,
+                    action: 'ssrf_test_api',
+                    nonce: ssrf_admin.nonce,
                     api_key: currentApiKey,
                     text: textToSpeak,
                     voice: voiceSelected,
@@ -126,7 +126,7 @@ jQuery(document).ready(function($) {
                 success: function(response) {
                     testApiBtn.prop('disabled', false);
                     if (response.success && response.data && response.data.audio_url) {
-                        testerStatus.removeClass('error loading').addClass('success').text(sangar_readflow_admin.test_success);
+                        testerStatus.removeClass('error loading').addClass('success').text(ssrf_admin.test_success);
                         
                         // Feed generated mpeg string to player
                         testerAudioPlayer.src = response.data.audio_url;
@@ -135,13 +135,13 @@ jQuery(document).ready(function($) {
                             console.log("Autoplay blocked by browser. Click play manually.");
                         });
                     } else {
-                        const errorMsg = response.data || sangar_readflow_admin.test_fail;
+                        const errorMsg = response.data || ssrf_admin.test_fail;
                         testerStatus.removeClass('success loading').addClass('error').text(errorMsg);
                     }
                 },
                 error: function(xhr, status, error) {
                     testApiBtn.prop('disabled', false);
-                    testerStatus.removeClass('success loading').addClass('error').text(sangar_readflow_admin.test_fail + " (" + error + ")");
+                    testerStatus.removeClass('success loading').addClass('error').text(ssrf_admin.test_fail + " (" + error + ")");
                 }
             });
         });
@@ -163,11 +163,11 @@ jQuery(document).ready(function($) {
             clearCacheBtn.prop('disabled', true).text('Limpiando...');
 
             $.ajax({
-                url: sangar_readflow_admin.ajax_url,
+                url: ssrf_admin.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'sangar_readflow_clear_cache',
-                    nonce: sangar_readflow_admin.nonce
+                    action: 'ssrf_clear_cache',
+                    nonce: ssrf_admin.nonce
                 },
                 success: function(response) {
                     clearCacheBtn.prop('disabled', false).html('🗑️ Limpiar Todos los Audios');

@@ -1,14 +1,14 @@
 === Sangar Studio ReadFlow ===
 Contributors: antigravity
-Tags: reading-time, text-to-speech, audio-player, ai-voice, openai-tts, speech-synthesis, accessibility
+Tags: reading-time, text-to-speech, audio-player, ai-voice, accessibility
 Requires at least: 5.8
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A premium WordPress plugin that calculates post reading times, displays a sleek progress widget, and generates high-fidelity AI audio versions using OpenAI's Text-to-Speech API, with local caching and browser SpeechSynthesis fallback.
+Displays blog post reading times and generates premium AI voice audio narrations using OpenAI TTS with local caching.
 
 == Description ==
 
@@ -61,6 +61,22 @@ Select "Insertar manualmente" in the settings, and insert the shortcode `[sangar
 (The legacy shortcode `[readio]` is also fully supported for backward compatibility).
 
 == Changelog ==
+
+= 1.2.1 =
+* Fixed Text Domain Mismatch errors for proper i18n compatibility.
+
+= 1.2.0 =
+* Added full WordPress 7.0 compatibility.
+* Integrated natively with the WordPress 7.0 Abilities API (safely supported on WP 6.9+), exposing post audio narration generation and retrieval as standard system abilities.
+* Ready for the WordPress 7.0 Native AI Client and Model Context Protocol (MCP) tool-calling support.
+* Fully verified compatibility with PHP 8.3 and PHP 8.4 recommended guidelines for WordPress 7.0.
+
+= 1.1.1 =
+* Fixed all WordPress Plugin Check tool errors and warnings.
+* Replaced strip_tags with wp_strip_all_tags for better compliance.
+* Added missing translators comments to translatable strings.
+* Scoped uninstall variables and migrated to WP_Filesystem API in uninstall.php.
+* Cleaned up deprecated load_plugin_textdomain call.
 
 = 1.1.0 =
 * Added OpenAI TTS integration with 6 beautiful natural voices.
