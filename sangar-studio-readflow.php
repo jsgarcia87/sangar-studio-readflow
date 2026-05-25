@@ -3,7 +3,7 @@
  * Plugin Name: Sangar Studio ReadFlow
  * Description: Calculates post reading time with a beautiful progress bar and generates high-quality AI audio versions using OpenAI TTS with local caching, plus native browser speech fallback.
  * Version: 1.2.1
- * Author: Antigravity
+ * Author: Sangar Studio
  * Text Domain: sangar-studio-readflow
  * Domain Path: /languages
  * License: GPL2

@@ -1,5 +1,5 @@
 === Sangar Studio ReadFlow ===
-Contributors: antigravity
+Contributors: Sangar Studio
 Tags: reading-time, text-to-speech, audio-player, ai-voice, accessibility
 Requires at least: 5.8
 Tested up to: 7.0
