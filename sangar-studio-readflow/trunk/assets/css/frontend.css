@@ -482,3 +482,350 @@
     text-transform: uppercase;
     color: #000 !important;
 }
+
+/* =============================================================
+   2. LAYOUT MODES (Compact, Minimal, Card)
+   ============================================================= */
+
+.readio-widget {
+    max-width: var(--ssrf-max-width, 100%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* COMPACT BAR LAYOUT (Sleek Spotify / Apple Music horizontal style) */
+.readio-widget.readio-layout-compact {
+    padding: 12px 18px !important;
+    margin: 24px auto !important;
+    border-radius: var(--ssrf-radius, 99px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.readio-widget.readio-layout-compact .readio-player-body {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+.readio-widget.readio-layout-compact .readio-widget-header {
+    margin-bottom: 0 !important;
+}
+
+.readio-widget.readio-layout-compact .readio-stat-pill {
+    padding: 4px 10px;
+    font-size: 11px;
+}
+
+.readio-widget.readio-layout-compact .readio-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* MINIMAL LAYOUT (Inline text/icon player without borders or card background) */
+.readio-widget.readio-layout-minimal {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 8px 0 !important;
+    margin: 16px auto !important;
+}
+
+.readio-widget.readio-layout-minimal .readio-player-body {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+.readio-widget.readio-layout-minimal .readio-widget-header {
+    margin-bottom: 6px !important;
+}
+
+/* CARD LAYOUT (Default rich card container) */
+.readio-widget.readio-layout-card {
+    /* Uses standard padding and background */
+}
+
+/* =============================================================
+   3. CAJA DE AUTOR (AUTHOR BOX) PREMIUM STYLES
+   ============================================================= */
+
+.ssrf-author-box {
+    margin: 48px auto 32px;
+    padding: 32px;
+    border-radius: var(--ssrf-radius, 20px);
+    border: 1px solid var(--ssrf-border, rgba(226, 232, 240, 0.8));
+    background: var(--ssrf-bg, rgba(255, 255, 255, 0.85));
+    box-shadow: var(--ssrf-shadow, 0 10px 30px -5px rgba(0, 0, 0, 0.06));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    font-family: var(--ssrf-font, inherit);
+    color: var(--ssrf-text, #1e293b);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    max-width: var(--ssrf-max-width, 100%);
+    box-sizing: border-box;
+}
+
+.ssrf-author-box *,
+.ssrf-author-box *::before,
+.ssrf-author-box *::after {
+    box-sizing: border-box;
+}
+
+/* Author Box Themes */
+.ssrf-author-box.ssrf-author-theme-minimal {
+    background: transparent !important;
+    border: 1px solid var(--ssrf-border, rgba(226, 232, 240, 0.6)) !important;
+    box-shadow: none !important;
+    padding: 24px;
+}
+
+.ssrf-author-box.ssrf-author-theme-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+    border-color: rgba(226, 232, 240, 1);
+    box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+    .ssrf-author-box.ssrf-author-theme-modern,
+    .ssrf-author-box.ssrf-author-theme-card {
+        background: rgba(15, 23, 42, 0.75);
+        border-color: rgba(51, 65, 85, 0.6);
+        color: #f1f5f9;
+        box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.35);
+    }
+}
+
+/* Header Badge */
+.ssrf-author-header {
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.ssrf-author-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(var(--ssrf-accent-rgb, 99, 102, 241), 0.12);
+    color: var(--ssrf-accent, #6366f1);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 12px;
+    border-radius: 99px;
+    border: 1px solid rgba(var(--ssrf-accent-rgb, 99, 102, 241), 0.2);
+}
+
+/* Main Author Content Layout */
+.ssrf-author-body {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* Avatar Styling */
+.ssrf-author-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.ssrf-author-avatar {
+    width: 92px;
+    height: 92px;
+    object-fit: cover;
+    display: block;
+    border: 3px solid rgba(var(--ssrf-accent-rgb, 99, 102, 241), 0.25);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    background: #e2e8f0;
+}
+
+.ssrf-avatar-circle .ssrf-author-avatar {
+    border-radius: 50%;
+}
+
+.ssrf-avatar-rounded .ssrf-author-avatar {
+    border-radius: 20px;
+}
+
+.ssrf-avatar-hexagon .ssrf-author-avatar {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    border-radius: 0;
+}
+
+.ssrf-avatar-link:hover .ssrf-author-avatar {
+    transform: scale(1.05);
+    border-color: var(--ssrf-accent, #6366f1);
+    box-shadow: 0 8px 25px -4px rgba(var(--ssrf-accent-rgb, 99, 102, 241), 0.4);
+}
+
+.ssrf-avatar-glow {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--ssrf-accent-rgb, 99, 102, 241), 0.3) 0%, transparent 70%);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ssrf-avatar-link:hover .ssrf-avatar-glow {
+    opacity: 1;
+}
+
+/* Author Info & Typography */
+.ssrf-author-info {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.ssrf-author-title-row {
+    margin-bottom: 10px;
+}
+
+.ssrf-author-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    line-height: 1.25;
+    color: var(--ssrf-text, #0f172a);
+}
+
+.ssrf-author-name a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease;
+}
+
+.ssrf-author-name a:hover {
+    color: var(--ssrf-accent, #6366f1);
+}
+
+.ssrf-author-tagline {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ssrf-accent, #6366f1);
+    display: block;
+    margin-top: 2px;
+}
+
+.ssrf-author-bio {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ssrf-text-muted, #475569);
+    margin-bottom: 18px;
+}
+
+.ssrf-author-bio p {
+    margin: 0 0 10px 0;
+}
+
+.ssrf-author-bio p:last-child {
+    margin-bottom: 0;
+}
+
+/* Social Network Links & Buttons */
+.ssrf-author-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.ssrf-social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 99px;
+    background: rgba(var(--ssrf-accent-rgb, 99, 102, 241), 0.08);
+    color: var(--ssrf-text, #1e293b);
+    text-decoration: none !important;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(var(--ssrf-accent-rgb, 99, 102, 241), 0.16);
+}
+
+.ssrf-social-icons .ssrf-social-link {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.ssrf-social-link svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.ssrf-social-link:hover {
+    background: var(--ssrf-accent, #6366f1);
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px -2px rgba(var(--ssrf-accent-rgb, 99, 102, 241), 0.4);
+    border-color: var(--ssrf-accent, #6366f1);
+}
+
+.ssrf-social-link:hover svg {
+    transform: scale(1.1);
+}
+
+/* Social Networks Specific Brand Colors on Hover */
+.ssrf-social-link.ssrf-linkedin:hover {
+    background: #0a66c2 !important;
+    border-color: #0a66c2 !important;
+    box-shadow: 0 6px 16px -2px rgba(10, 102, 194, 0.4);
+}
+
+.ssrf-social-link.ssrf-twitter:hover {
+    background: #0f1419 !important;
+    border-color: #0f1419 !important;
+    box-shadow: 0 6px 16px -2px rgba(15, 20, 25, 0.4);
+}
+
+.ssrf-social-link.ssrf-instagram:hover {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+    border-color: #cc2366 !important;
+    box-shadow: 0 6px 16px -2px rgba(204, 35, 102, 0.4);
+}
+
+.ssrf-social-link.ssrf-github:hover {
+    background: #24292f !important;
+    border-color: #24292f !important;
+    box-shadow: 0 6px 16px -2px rgba(36, 41, 47, 0.4);
+}
+
+/* Responsive Author Box */
+@media (max-width: 640px) {
+    .ssrf-author-body {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .ssrf-author-socials {
+        justify-content: center;
+    }
+
+    .ssrf-author-header {
+        justify-content: center;
+    }
+
+    .ssrf-author-avatar {
+        width: 104px;
+        height: 104px;
+    }
+}
+

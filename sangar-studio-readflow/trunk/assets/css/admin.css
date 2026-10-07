@@ -422,3 +422,37 @@ input:checked + .readio-slider:before {
     align-items: center;
     vertical-align: middle;
 }
+
+/* =============================================================
+   AUTHOR BOX & NEW CUSTOMIZATION ADMIN STYLES
+   ============================================================= */
+
+.readio-card-author {
+    border-top: 4px solid #6366f1;
+}
+
+.readio-card-author .readio-card-header {
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+}
+
+.readio-card-author .readio-card-icon {
+    background: rgba(99, 102, 241, 0.12);
+    color: #6366f1;
+    border-radius: 10px;
+    padding: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.readio-card-author .readio-card-title {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+/* Select and form enhancements in Admin */
+.readio-form-group select.readio-select {
+    width: 100%;
+    max-width: 320px;
+}
+

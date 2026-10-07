@@ -70,6 +70,10 @@ class SSRF_Frontend {
         $custom_text   = get_option( 'ssrf_text_color', '' );
         $custom_text_muted = get_option( 'ssrf_text_muted_color', '' );
         $button_text   = get_option( 'ssrf_button_text_color', '#ffffff' );
+        $layout_style  = get_option( 'ssrf_layout_style', 'compact' );
+        $show_stats    = get_option( 'ssrf_show_stats', 'both' );
+        $player_width  = get_option( 'ssrf_player_width', 'full' );
+        $shadow_style  = get_option( 'ssrf_shadow_style', 'subtle' );
 
         // Enqueue icon libraries if needed
         if ( 'fontawesome' === $icon_style ) {
@@ -177,6 +181,25 @@ class SSRF_Frontend {
             $css_text_muted = $custom_text_muted;
         }
 
+        // Override shadow based on shadow_style setting
+        if ( 'none' === $shadow_style ) {
+            $css_shadow = 'none';
+        } elseif ( 'medium' === $shadow_style ) {
+            $css_shadow = '0 14px 30px -6px rgba(0, 0, 0, 0.15), 0 8px 16px -6px rgba(0, 0, 0, 0.08)';
+        } elseif ( 'neon' === $shadow_style ) {
+            $css_shadow = '0 0 25px -2px ' . $accent_1 . '66';
+        } elseif ( 'subtle' === $shadow_style ) {
+            $css_shadow = '0 4px 14px -2px rgba(0, 0, 0, 0.06)';
+        }
+
+        // Determine player max-width
+        $css_max_width = '100%';
+        if ( 'medium' === $player_width ) {
+            $css_max_width = '680px';
+        } elseif ( 'auto' === $player_width ) {
+            $css_max_width = 'max-content';
+        }
+
         // Get wave customizer options
         $bars_count     = (int) get_option( 'ssrf_wave_bars_count', 5 );
         $bars_style     = get_option( 'ssrf_wave_bars_style', 'classic' );
@@ -224,6 +247,7 @@ class SSRF_Frontend {
                 --ssrf-font: {$css_font};
                 --ssrf-backdrop-filter: {$css_backdrop};
                 --ssrf-player-bg: {$css_player_bg};
+                --ssrf-max-width: {$css_max_width};
                 --ssrf-wave-align: {$align_items};
                 --ssrf-wave-bar-width: {$bar_width};
                 --ssrf-wave-bar-gap: {$bar_gap};
@@ -327,8 +351,11 @@ class SSRF_Frontend {
         $show_dl   = get_option( 'ssrf_show_download', true );
 
         $theme_style = get_option( 'ssrf_theme_style', 'glass' );
-        $widget_class = 'readio-widget readio-theme-' . esc_attr( $theme_style );
-        $icon_style = get_option( 'ssrf_icon_style', 'emoji' );
+        $layout_style = get_option( 'ssrf_layout_style', 'compact' );
+        $show_stats   = get_option( 'ssrf_show_stats', 'both' );
+        $show_badge   = get_option( 'ssrf_show_mode_badge', true );
+        $widget_class = 'readio-widget readio-theme-' . esc_attr( $theme_style ) . ' readio-layout-' . esc_attr( $layout_style );
+        $icon_style   = get_option( 'ssrf_icon_style', 'emoji' );
 
         $time_icon = '⏱️';
         $word_icon = '✍️';
@@ -346,29 +373,39 @@ class SSRF_Frontend {
         ob_start();
         ?>
         <div class="<?php echo esc_attr( $widget_class ); ?>" id="readio-widget-box" data-post-id="<?php echo esc_attr( $post->ID ); ?>">
-            <div class="readio-widget-header" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                <div class="readio-stat-pill" style="display: flex; gap: 8px; align-items: center;">
-                    <?php if ( $time_icon ) : ?>
-                        <span class="readio-pill-icon"><?php echo wp_kses_post( $time_icon ); ?></span>
-                    <?php endif; ?>
-                    <span class="readio-pill-text">
-                        <?php
-                        /* translators: %d: Reading time in minutes */
-                        printf( esc_html__( 'Tiempo de lectura: %d min', 'sangar-studio-readflow' ), absint( $time ) );
-                        ?>
-                    </span>
-                    <span class="readio-pill-separator" style="color: var(--ssrf-text-muted); opacity: 0.5;">|</span>
-                    <?php if ( $word_icon ) : ?>
-                        <span class="readio-pill-icon"><?php echo wp_kses_post( $word_icon ); ?></span>
-                    <?php endif; ?>
-                    <span class="readio-pill-text">
-                        <?php
-                        /* translators: %s: Number of words */
-                        echo esc_html( sprintf( _n( '%s palabra', '%s palabras', $words, 'sangar-studio-readflow' ), number_format_i18n( $words ) ) );
-                        ?>
-                    </span>
+            <?php if ( 'hidden' !== $show_stats ) : ?>
+                <div class="readio-widget-header">
+                    <div class="readio-stat-pill">
+                        <?php if ( in_array( $show_stats, [ 'both', 'time_only' ], true ) ) : ?>
+                            <?php if ( $time_icon ) : ?>
+                                <span class="readio-pill-icon"><?php echo wp_kses_post( $time_icon ); ?></span>
+                            <?php endif; ?>
+                            <span class="readio-pill-text">
+                                <?php
+                                /* translators: %d: Reading time in minutes */
+                                printf( esc_html__( 'Tiempo de lectura: %d min', 'sangar-studio-readflow' ), absint( $time ) );
+                                ?>
+                            </span>
+                        <?php endif; ?>
+
+                        <?php if ( 'both' === $show_stats ) : ?>
+                            <span class="readio-pill-separator">|</span>
+                        <?php endif; ?>
+
+                        <?php if ( in_array( $show_stats, [ 'both', 'words_only' ], true ) ) : ?>
+                            <?php if ( $word_icon ) : ?>
+                                <span class="readio-pill-icon"><?php echo wp_kses_post( $word_icon ); ?></span>
+                            <?php endif; ?>
+                            <span class="readio-pill-text">
+                                <?php
+                                /* translators: %s: Number of words */
+                                echo esc_html( sprintf( _n( '%s palabra', '%s palabras', $words, 'sangar-studio-readflow' ), number_format_i18n( $words ) ) );
+                                ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
                 </div>
-            </div>
+            <?php endif; ?>
 
             <div class="readio-player-body">
                 <div class="readio-row">
@@ -428,13 +465,15 @@ class SSRF_Frontend {
                         </ul>
                     </div>
 
-                    <!-- Mode Indicator badge -->
-                    <div class="readio-mode-indicator">
-                        <span class="readio-indicator-dot"></span>
-                        <span class="readio-indicator-text" id="readio-mode-label">
-                            <?php echo $has_ai ? esc_html__( 'Voz Inteligente', 'sangar-studio-readflow' ) : esc_html__( 'Voz del Navegador', 'sangar-studio-readflow' ); ?>
-                        </span>
-                    </div>
+                    <?php if ( $show_badge ) : ?>
+                        <!-- Mode Indicator badge -->
+                        <div class="readio-mode-indicator">
+                            <span class="readio-indicator-dot"></span>
+                            <span class="readio-indicator-text" id="readio-mode-label">
+                                <?php echo $has_ai ? esc_html__( 'Voz Inteligente', 'sangar-studio-readflow' ) : esc_html__( 'Voz del Navegador', 'sangar-studio-readflow' ); ?>
+                            </span>
+                        </div>
+                    <?php endif; ?>
 
                     <!-- Direct File Download Link -->
                     <?php if ( $has_ai && $show_dl ) : ?>

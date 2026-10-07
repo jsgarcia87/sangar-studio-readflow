@@ -181,6 +181,74 @@ class SSRF_Settings {
             'sanitize_callback' => [ $this, 'sanitize_wave_bars_animation' ],
             'default'           => 'energetic',
         ]);
+
+        // New Widget Customization settings
+        register_setting( 'ssrf_settings_group', 'ssrf_layout_style', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_layout_style' ],
+            'default'           => 'compact',
+        ]);
+
+        register_setting( 'ssrf_settings_group', 'ssrf_show_stats', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_show_stats' ],
+            'default'           => 'both',
+        ]);
+
+        register_setting( 'ssrf_settings_group', 'ssrf_show_mode_badge', [
+            'type'              => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'default'           => true,
+        ]);
+
+        register_setting( 'ssrf_settings_group', 'ssrf_player_width', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_player_width' ],
+            'default'           => 'full',
+        ]);
+
+        register_setting( 'ssrf_settings_group', 'ssrf_shadow_style', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_shadow_style' ],
+            'default'           => 'subtle',
+        ]);
+
+        // New Author Box settings
+        register_setting( 'ssrf_settings_group', 'ssrf_enable_author_box', [
+            'type'              => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'default'           => true,
+        ]);
+
+        register_setting( 'ssrf_settings_group', 'ssrf_author_box_style', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_author_box_style' ],
+            'default'           => 'glass',
+        ]);
+
+        register_setting( 'ssrf_settings_group', 'ssrf_author_box_title', [
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default'           => 'Escrito por',
+        ]);
+
+        register_setting( 'ssrf_settings_group', 'ssrf_author_avatar_style', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_author_avatar_style' ],
+            'default'           => 'circle',
+        ]);
+
+        register_setting( 'ssrf_settings_group', 'ssrf_author_social_style', [
+            'type'              => 'string',
+            'sanitize_callback' => [ $this, 'sanitize_author_social_style' ],
+            'default'           => 'icons',
+        ]);
+
+        register_setting( 'ssrf_settings_group', 'ssrf_author_fallback_bio', [
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_textarea_field',
+            'default'           => '',
+        ]);
     }
 
     /**
@@ -284,6 +352,48 @@ class SSRF_Settings {
         return in_array( $value, $allowed, true ) ? $value : 'energetic';
     }
 
+    public function sanitize_layout_style( $value ) {
+        $allowed = [ 'compact', 'minimal', 'card' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'compact';
+    }
+
+    public function sanitize_show_stats( $value ) {
+        $allowed = [ 'both', 'time_only', 'words_only', 'hidden' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'both';
+    }
+
+    public function sanitize_player_width( $value ) {
+        $allowed = [ 'full', 'medium', 'auto' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'full';
+    }
+
+    public function sanitize_shadow_style( $value ) {
+        $allowed = [ 'subtle', 'medium', 'none', 'neon' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'subtle';
+    }
+
+    public function sanitize_author_box_style( $value ) {
+        $allowed = [ 'glass', 'minimal', 'gradient_border', 'compact' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'glass';
+    }
+
+    public function sanitize_author_avatar_style( $value ) {
+        $allowed = [ 'circle', 'rounded', 'glow' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'circle';
+    }
+
+    public function sanitize_author_social_style( $value ) {
+        $allowed = [ 'icons', 'buttons', 'colored' ];
+        $value = sanitize_text_field( $value );
+        return in_array( $value, $allowed, true ) ? $value : 'icons';
+    }
+
     /**
      * Enqueue asset files in Admin dashboard.
      */
@@ -338,6 +448,19 @@ class SSRF_Settings {
         $wave_bars_count        = get_option( 'ssrf_wave_bars_count', 5 );
         $wave_bars_style        = get_option( 'ssrf_wave_bars_style', 'classic' );
         $wave_bars_animation    = get_option( 'ssrf_wave_bars_animation', 'energetic' );
+
+        $layout_style           = get_option( 'ssrf_layout_style', 'compact' );
+        $show_stats             = get_option( 'ssrf_show_stats', 'both' );
+        $show_mode_badge        = get_option( 'ssrf_show_mode_badge', true );
+        $player_width           = get_option( 'ssrf_player_width', 'full' );
+        $shadow_style           = get_option( 'ssrf_shadow_style', 'subtle' );
+
+        $enable_author_box      = get_option( 'ssrf_enable_author_box', true );
+        $author_box_style       = get_option( 'ssrf_author_box_style', 'glass' );
+        $author_box_title       = get_option( 'ssrf_author_box_title', __( 'Escrito por', 'sangar-studio-readflow' ) );
+        $author_avatar_style    = get_option( 'ssrf_author_avatar_style', 'circle' );
+        $author_social_style    = get_option( 'ssrf_author_social_style', 'icons' );
+        $author_fallback_bio    = get_option( 'ssrf_author_fallback_bio', '' );
 
         // Mask API Key for display if set
         $masked_key = '';
@@ -718,6 +841,162 @@ class SSRF_Settings {
                                             <span class="readio-slider"></span>
                                         </label>
                                         <p class="description"><?php esc_html_e( 'Muestra un enlace discreto de descarga en el reproductor personalizado (solo disponible para voz IA).', 'sangar-studio-readflow' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_layout_style">
+                                        <?php esc_html_e( 'Estilo del Layout del Reproductor', 'sangar-studio-readflow' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="ssrf_layout_style" id="readio_layout_style" class="readio-select">
+                                            <option value="compact" <?php selected( $layout_style, 'compact' ); ?>><?php esc_html_e( 'Compact Bar (Estilo Spotify/Apple Music - Recomendado)', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="minimal" <?php selected( $layout_style, 'minimal' ); ?>><?php esc_html_e( 'Minimalista (Píldora flotante simple)', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="card" <?php selected( $layout_style, 'card' ); ?>><?php esc_html_e( 'Tarjeta Completa (Diseño extendido original)', 'sangar-studio-readflow' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'El nuevo diseño Compact Bar elimina cajas anidadas y reduce la altura vertical, integrándose sin saturar tu artículo.', 'sangar-studio-readflow' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_show_stats">
+                                        <?php esc_html_e( 'Estadísticas Visibles', 'sangar-studio-readflow' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="ssrf_show_stats" id="readio_show_stats" class="readio-select">
+                                            <option value="both" <?php selected( $show_stats, 'both' ); ?>><?php esc_html_e( 'Ambas (Tiempo de lectura + Palabras)', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="time_only" <?php selected( $show_stats, 'time_only' ); ?>><?php esc_html_e( 'Sólo Tiempo de lectura', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="words_only" <?php selected( $show_stats, 'words_only' ); ?>><?php esc_html_e( 'Sólo Contador de palabras', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="hidden" <?php selected( $show_stats, 'hidden' ); ?>><?php esc_html_e( 'Ocultar estadísticas', 'sangar-studio-readflow' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Elige qué métricas de lectura mostrar junto al reproductor.', 'sangar-studio-readflow' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_show_mode_badge">
+                                        <?php esc_html_e( 'Mostrar Badge de Modo (IA / TTS)', 'sangar-studio-readflow' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <label class="readio-switch">
+                                            <input type="checkbox" name="ssrf_show_mode_badge" id="readio_show_mode_badge" value="1" <?php checked( $show_mode_badge, true ); ?>>
+                                            <span class="readio-slider"></span>
+                                        </label>
+                                        <p class="description"><?php esc_html_e( 'Muestra u oculta la etiqueta discreta "IA VOICE" o "TTS AUDIO" en el reproductor.', 'sangar-studio-readflow' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_player_width">
+                                        <?php esc_html_e( 'Ancho del Reproductor', 'sangar-studio-readflow' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="ssrf_player_width" id="readio_player_width" class="readio-select">
+                                            <option value="full" <?php selected( $player_width, 'full' ); ?>><?php esc_html_e( '100% (Ancho total del contenedor)', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="medium" <?php selected( $player_width, 'medium' ); ?>><?php esc_html_e( 'Centrado medio (Máx 680px)', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="auto" <?php selected( $player_width, 'auto' ); ?>><?php esc_html_e( 'Automático (Ajustado al contenido)', 'sangar-studio-readflow' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Controla el ancho máximo del widget de audio en tu entrada.', 'sangar-studio-readflow' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_shadow_style">
+                                        <?php esc_html_e( 'Intensidad de Sombra', 'sangar-studio-readflow' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="ssrf_shadow_style" id="readio_shadow_style" class="readio-select">
+                                            <option value="subtle" <?php selected( $shadow_style, 'subtle' ); ?>><?php esc_html_e( 'Sutil (Sombra suave y elegante)', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="medium" <?php selected( $shadow_style, 'medium' ); ?>><?php esc_html_e( 'Media (Elevación clara con profundidad)', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="none" <?php selected( $shadow_style, 'none' ); ?>><?php esc_html_e( 'Sin sombra (Plano e integrado)', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="neon" <?php selected( $shadow_style, 'neon' ); ?>><?php esc_html_e( 'Resplandor Neón (Glow con el color de acento)', 'sangar-studio-readflow' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Define la profundidad visual del widget.', 'sangar-studio-readflow' ); ?></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB CARD 5: AUTHOR BOX SETTINGS -->
+                        <div class="readio-card">
+                            <div class="readio-card-header">
+                                <span class="card-icon">✍️</span>
+                                <h2><?php esc_html_e( 'Caja de Autor & RRSS (Author Box)', 'sangar-studio-readflow' ); ?></h2>
+                            </div>
+                            <div class="readio-card-body">
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_enable_author_box">
+                                        <?php esc_html_e( 'Mostrar Caja de Autor', 'sangar-studio-readflow' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <label class="readio-switch">
+                                            <input type="checkbox" name="ssrf_enable_author_box" id="readio_enable_author_box" value="1" <?php checked( $enable_author_box, true ); ?>>
+                                            <span class="readio-slider"></span>
+                                        </label>
+                                        <p class="description"><?php esc_html_e( 'Inserta automáticamente una elegante tarjeta de autor con foto, biografía y enlaces de redes sociales al final de las entradas.', 'sangar-studio-readflow' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_author_box_style">
+                                        <?php esc_html_e( 'Estilo de la Caja de Autor', 'sangar-studio-readflow' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="ssrf_author_box_style" id="readio_author_box_style" class="readio-select">
+                                            <option value="glass" <?php selected( $author_box_style, 'glass' ); ?>><?php esc_html_e( 'Glassmorphism (Vidrio translúcido premium)', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="minimal" <?php selected( $author_box_style, 'minimal' ); ?>><?php esc_html_e( 'Minimalista (Limpio, sin borde contundente)', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="gradient_border" <?php selected( $author_box_style, 'gradient_border' ); ?>><?php esc_html_e( 'Borde Degradado (Efecto resplandeciente moderno)', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="compact" <?php selected( $author_box_style, 'compact' ); ?>><?php esc_html_e( 'Compacto (Tarjeta horizontal reducida)', 'sangar-studio-readflow' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Selecciona el diseño visual de la caja de autor.', 'sangar-studio-readflow' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_author_box_title">
+                                        <?php esc_html_e( 'Título de la Cabecera', 'sangar-studio-readflow' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <input type="text" name="ssrf_author_box_title" id="readio_author_box_title" value="<?php echo esc_attr( $author_box_title ); ?>" class="regular-text">
+                                        <p class="description"><?php esc_html_e( 'El texto que aparece en la parte superior de la tarjeta (ej. "Escrito por" o "Sobre el autor").', 'sangar-studio-readflow' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_author_avatar_style">
+                                        <?php esc_html_e( 'Estilo de Avatar', 'sangar-studio-readflow' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="ssrf_author_avatar_style" id="readio_author_avatar_style" class="readio-select">
+                                            <option value="circle" <?php selected( $author_avatar_style, 'circle' ); ?>><?php esc_html_e( 'Circular clásico', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="rounded" <?php selected( $author_avatar_style, 'rounded' ); ?>><?php esc_html_e( 'Cuadrado con esquinas suaves', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="glow" <?php selected( $author_avatar_style, 'glow' ); ?>><?php esc_html_e( 'Circular con resplandor (Glow effect)', 'sangar-studio-readflow' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Define la forma de la fotografía del autor.', 'sangar-studio-readflow' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_author_social_style">
+                                        <?php esc_html_e( 'Estilo de Redes Sociales', 'sangar-studio-readflow' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <select name="ssrf_author_social_style" id="readio_author_social_style" class="readio-select">
+                                            <option value="icons" <?php selected( $author_social_style, 'icons' ); ?>><?php esc_html_e( 'Iconos minimalistas', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="buttons" <?php selected( $author_social_style, 'buttons' ); ?>><?php esc_html_e( 'Botones con texto', 'sangar-studio-readflow' ); ?></option>
+                                            <option value="colored" <?php selected( $author_social_style, 'colored' ); ?>><?php esc_html_e( 'Iconos con colores de la marca (LinkedIn azul, etc.)', 'sangar-studio-readflow' ); ?></option>
+                                        </select>
+                                        <p class="description"><?php esc_html_e( 'Cómo se mostrarán los enlaces a LinkedIn, X, Instagram y GitHub en la tarjeta.', 'sangar-studio-readflow' ); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="readio-form-row">
+                                    <label class="readio-label" for="readio_author_fallback_bio">
+                                        <?php esc_html_e( 'Biografía por Defecto (Fallback Bio)', 'sangar-studio-readflow' ); ?>
+                                    </label>
+                                    <div class="readio-input-wrap">
+                                        <textarea name="ssrf_author_fallback_bio" id="readio_author_fallback_bio" rows="3" class="large-text"><?php echo esc_textarea( $author_fallback_bio ); ?></textarea>
+                                        <p class="description"><?php esc_html_e( 'Se mostrará esta biografía si el usuario que publicó la entrada no tiene configurada una biografía en su perfil de WordPress.', 'sangar-studio-readflow' ); ?></p>
                                     </div>
                                 </div>
                             </div>

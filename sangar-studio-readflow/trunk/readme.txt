@@ -4,7 +4,7 @@ Tags: reading-time, text-to-speech, audio-player, ai-voice, accessibility
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,15 +38,16 @@ If no API Key is provided, or if the API suffers a network failure, the plugin a
 2. Activate the plugin through the **Plugins** screen in WordPress.
 3. Navigate to **Settings > ReadFlow 🎙️** in your admin dashboard.
 4. (Optional) Toggle "Activar Voz por IA", input your OpenAI API Key, and select your default voice and model.
-5. Customize visual configurations (accent colors, positioning, reading speeds) and click **Guardar Configuración**.
+5. Customize your visual preferences, reading speed WPM, and Author Box options.
+6. The reading time and AI audio player will appear automatically on your blog posts!
 
 == Frequently Asked Questions ==
 
-= Is an OpenAI API Key required? =
-No. If you leave "Voz por IA" disabled or do not provide an API Key, the plugin operates in fallback mode, using the reader's local web browser engine (`window.speechSynthesis`) to synthesize voice completely free and instantly.
+= Does this plugin work without an OpenAI API Key? =
+Yes! Without an API Key, Sangar Studio ReadFlow automatically switches to the Web Speech API fallback, synthesizing text-to-speech using the reader's native browser voice.
 
-= Where are the generated audio files saved? =
-Files are saved inside the `/wp-content/uploads/sangar-studio-readflow/` directory as static MP3 files. They are automatically named according to post IDs (e.g. `post-42.mp3`).
+= How does local MP3 caching work? =
+When an article is listened to for the first time (or pre-generated upon publishing), the audio file is stored in `wp-content/uploads/sangar-studio-readflow/`. All future visitors listen directly to this local file with 0 ms generation latency and zero API cost.
 
 = How is cache invalidated when I edit a post? =
 The plugin listens to post updates. Saving, editing, or trashing a post automatically deletes its corresponding cached MP3 so that the fresh content is compiled on the next listener's play click.
@@ -54,13 +55,33 @@ The plugin listens to post updates. Saving, editing, or trashing a post automati
 = Does the text chunking support very long articles? =
 Yes! Sangar Studio ReadFlow breaks articles into smart, semantic chunks of approximately 3,500 characters, avoiding breaking mid-word or mid-sentence. It submits each chunk sequentially and compiles the resulting binaries into a unified audio stream, bypassing OpenAI's 4,096 character limit easily.
 
-= How can I place the widget manually? =
-Select "Insertar manualmente" in the settings, and insert the shortcode `[sangar-studio-readflow]` anywhere in your post text, or call it programmatically in your theme files:
+= How can I place the widget or Author Box manually? =
+Select "Insertar manualmente" in the settings, and insert the shortcode `[sangar-studio-readflow]` for the audio player, and `[ssrf_author]` (or `[ssrf_author_box]`) for the Author Box anywhere in your post text or theme files:
 `<?php echo do_shortcode('[sangar-studio-readflow]'); ?>`
 
 (The legacy shortcode `[readio]` is also fully supported for backward compatibility).
 
+= Can I customize the Author Box social icons and avatar shape? =
+Yes! From **Settings > ReadFlow 🎙️**, you can choose circle, rounded, or hexagon avatar styles with a hover glow effect, and toggle between SVG icon buttons or branded text links for LinkedIn, X, Instagram, GitHub, and Website.
+
+== Screenshots ==
+
+1. Premium Compact Bar audio widget with live equalizer animation and reading time statistics.
+2. Responsive Author Box with custom social network icons and avatar styling.
+3. Modern WordPress Admin settings dashboard with Live Voice Tester and API configuration.
+
 == Changelog ==
+
+= 1.3.0 =
+* [Feature] Added an integrated, responsive Author Box (Caja de Autor) module (`SSRF_Author`) displayed automatically at the bottom of blog posts or via shortcode `[ssrf_author]` / `[ssrf_author_box]`.
+* [Feature] Added custom user profile meta fields in WordPress Admin (**Users > Profile**) for LinkedIn, X (Twitter), Instagram, GitHub, Website, and Professional Tagline.
+* [Feature] Added customizable Author Box visual themes (Modern Glassmorphic, Minimalist, Card), avatar shapes (Circle, Rounded, Hexagon with glow effect), and SVG social button styles.
+* [Feature] Redesigned the audio player frontend with a sleek "Compact Bar" layout mode (Spotify / Apple Music inspired) that eliminates bulky nested block spacing and padding.
+* [Feature] Added "Minimal" and "Card" layout options for the audio widget to suit different theme aesthetics.
+* [Feature] Added granular widget customization settings: control visible statistics (time + words, time only, words only, or hidden), player max-width, drop-shadow styles (Subtle, Medium, Neon accent, None), and mode indicator badge toggle.
+* [Improvement] Removed hardcoded inline styles from frontend player templates in favor of CSS variables and responsive classes for cleaner markup and improved accessibility.
+* [Improvement] Updated administrative Settings page UI with intuitive cards and dedicated Author Box configuration controls.
+* [Review] Full syntax and WordPress coding standards verification passed.
 
 = 1.2.1 =
 * Fixed Text Domain Mismatch errors for proper i18n compatibility.

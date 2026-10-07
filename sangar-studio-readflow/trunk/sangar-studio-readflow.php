@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sangar Studio ReadFlow
- * Description: Calculates post reading time with a beautiful progress bar and generates high-quality AI audio versions using OpenAI TTS with local caching, plus native browser speech fallback.
- * Version: 1.2.1
+ * Description: Premium audio player with sleek Compact Bar layouts, accurate reading time calculations, OpenAI TTS with local caching, and an integrated responsive Author Box with social links.
+ * Version: 1.3.0
  * Author: Sangar Studio
  * Text Domain: sangar-studio-readflow
  * Domain Path: /languages
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants
-define( 'SSRF_VERSION', '1.2.1' );
+define( 'SSRF_VERSION', '1.3.0' );
 define( 'SSRF_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SSRF_URL', plugin_dir_url( __FILE__ ) );
 define( 'SSRF_BASENAME', plugin_basename( __FILE__ ) );
@@ -23,6 +23,7 @@ define( 'SSRF_BASENAME', plugin_basename( __FILE__ ) );
 require_once SSRF_PATH . 'includes/class-ssrf-settings.php';
 require_once SSRF_PATH . 'includes/class-ssrf-tts.php';
 require_once SSRF_PATH . 'includes/class-ssrf-frontend.php';
+require_once SSRF_PATH . 'includes/class-ssrf-author.php';
 
 /**
  * Initialize the plugin components
@@ -48,6 +49,9 @@ class SSRF {
 
         // Initialize frontend display & assets enqueueing
         new SSRF_Frontend();
+
+        // Initialize Author Box & User profile social links
+        new SSRF_Author();
 
         // Register activation & deactivation hooks
         register_activation_hook( __FILE__, [ $this, 'activate' ] );
